@@ -40,12 +40,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { login } from '@/api/api'
+import { VueCookiesType } from '@/components/cookie/vue-cookies'
+import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
+// import { login } from '@/api/api'
 
+interface QueryObj {
+  url?: string;
+}
+type Proxy = ComponentPublicInstance & {
+  $cookies: VueCookiesType;
+}
 export default defineComponent({
   name: 'login_form',
   setup () {
+    const ctx = getCurrentInstance() as ComponentInternalInstance
+    const proxy = ctx.proxy as Proxy
     const eye = ref(false)
     const loginForm = reactive({
       username: '',
@@ -53,11 +62,12 @@ export default defineComponent({
     })
 
     const submit = () => {
-      // const url = decodeURIComponent(window.location.href.split('?')[1].split('=')[1])
-      // const urlData = JSON.parse(url)
-      // console.log(urlData)
-      // window.location.href
-      login()
+      const query:QueryObj = proxy.$route.query || { url: '' }
+      console.log(query)
+      console.log(proxy?.$cookies.get('token'))
+      proxy.$cookies.set('token', '111221')
+      window.location.href = query.url + '?token=111221' || ''
+      // login()
     }
     const clearForm = () => {
       loginForm.username = ''
@@ -65,9 +75,9 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      const a = document.cookie
-      console.log('110da21278ede4f87dd26fe23a6f0f0e')
-      console.log(a)
+      // const a = document.cookie
+      // console.log('110da21278ede4f87dd26fe23a6f0f0e')
+      // console.log(a)
     })
 
     return {
