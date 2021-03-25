@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { login1 } from '@/api/api'
+import { login } from '@/api/api'
 
 export default defineComponent({
   name: 'login_form',
@@ -57,7 +57,7 @@ export default defineComponent({
       // const urlData = JSON.parse(url)
       // console.log(urlData)
       // window.location.href
-      login1()
+      login()
     }
     const clearForm = () => {
       loginForm.username = ''
