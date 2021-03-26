@@ -9,7 +9,7 @@
         <div class="login_form_main_username login_form_main_input" style="margin-bottom: 12%;">
           <p>账号:</p>
           <div class="login_form_main_input_prefix">
-            <input v-model="loginForm.username" class="input" type="text" placeholder="账号">
+            <input v-model="loginForm.userName" class="input" type="text" placeholder="账号">
             <em class="iconfont factory-zhanghao" />
           </div>
         </div>
@@ -40,37 +40,48 @@
 </template>
 
 <script lang="ts">
-import { VueCookiesType } from '@/components/cookie/vue-cookies'
 import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-// import { login } from '@/api/api'
+import { login, getToken } from '@/api/api'
 
 interface QueryObj {
   url?: string;
-}
-type Proxy = ComponentPublicInstance & {
-  $cookies: VueCookiesType;
+  clientId?: string;
+  responseType?: string;
+  redirectUri?: string;
 }
 export default defineComponent({
   name: 'login_form',
   setup () {
     const ctx = getCurrentInstance() as ComponentInternalInstance
-    const proxy = ctx.proxy as Proxy
+    const proxy = ctx.proxy as ComponentPublicInstance
     const eye = ref(false)
     const loginForm = reactive({
-      username: '',
+      userName: '',
       password: ''
     })
 
     const submit = () => {
-      const query:QueryObj = proxy.$route.query || { url: '' }
-      console.log(query)
-      console.log(proxy?.$cookies.get('token'))
-      proxy.$cookies.set('token', '111221')
-      window.location.href = query.url + '?token=111221' || ''
-      // login()
+      const query:QueryObj = proxy.$route.query
+      const clientId = query.clientId || 'aa'
+      const responseType = query.responseType || 'code'
+      const redirectUri = query.redirectUri || 'code'
+      const url = `clientId=${clientId}&responseType=${responseType}`
+      console.log(clientId, responseType, redirectUri, url)
+      login(url, loginForm).then(({ data }) => {
+        getToken({
+          clientId: clientId,
+          clientSecret: 'aaa',
+          grantType: 'authorization_code',
+          code: data.data,
+          redirectUri: redirectUri
+        }).then(res => {
+          proxy.$cookies.set('token', res.data.data.token)
+          window.location.href = redirectUri + `?token=${res.data.data.token}`
+        })
+      })
     }
     const clearForm = () => {
-      loginForm.username = ''
+      loginForm.userName = ''
       loginForm.password = ''
     }
 

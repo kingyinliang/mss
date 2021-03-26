@@ -34,6 +34,12 @@ export interface VueCookiesType {
   keys(): string[];
 }
 
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $cookies: VueCookiesType // 这里可以用$Api具体的类型代替any
+  }
+}
+
 const VueCookies: VueCookiesType = {
   install: function (app: App) {
     app.config.globalProperties.$cookies = this
@@ -153,4 +159,5 @@ const VueCookies: VueCookiesType = {
 // if (typeof window !== 'undefined') {
 //   window.$cookies = VueCookies;
 // }
+
 export default VueCookies
