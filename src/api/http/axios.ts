@@ -7,7 +7,7 @@ export class HttpManager {
   constructor () {
     console.log('axios初始化')
     this._axios = axios.create({
-      baseURL: 'http://10.10.23.110:8080/df-system/v1',
+      baseURL: 'https://apimarket-dev.shinho.net.cn/df-system/v1',
       timeout: 30000
     })
     this.interceptorsRequest()

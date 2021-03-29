@@ -47,6 +47,7 @@ interface QueryObj {
   url?: string;
   clientId?: string;
   responseType?: string;
+  clientSecret?: string;
   redirectUri?: string;
 }
 export default defineComponent({
@@ -62,22 +63,29 @@ export default defineComponent({
 
     const submit = () => {
       const query:QueryObj = proxy.$route.query
-      const clientId = query.clientId || 'aa'
-      const responseType = query.responseType || 'code'
-      const redirectUri = query.redirectUri || 'code'
+
+      const clientId = query.clientId || 'baca244f8f0111eb9c21026438001fa4'
+      const responseType = query.responseType || 'client'
+      const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
+      const redirectUri = query.redirectUri
       const url = `clientId=${clientId}&responseType=${responseType}`
-      console.log(clientId, responseType, redirectUri, url)
       login(url, loginForm).then(({ data }) => {
-        getToken({
-          clientId: clientId,
-          clientSecret: 'aaa',
-          grantType: 'authorization_code',
-          code: data.data,
-          redirectUri: redirectUri
-        }).then(res => {
-          proxy.$cookies.set('token', res.data.data.token)
-          window.location.href = redirectUri + `?token=${res.data.data.token}`
-        })
+        if (redirectUri) {
+          // sso
+          getToken({
+            clientId: clientId,
+            clientSecret: clientSecret,
+            grantType: 'authorization_code',
+            code: data.data,
+            redirectUri: redirectUri
+          }).then(res => {
+            proxy.$cookies.set('token', res.data.data.token)
+            window.location.href = redirectUri + `?token=${res.data.data.token}`
+          })
+        } else {
+          // mss
+          proxy.$cookies.set('token', data.data.token)
+        }
       })
     }
     const clearForm = () => {
