@@ -37,11 +37,13 @@
       </div>
     </div>
   </div>
+  <SelectSystem v-model="visible" :system="system"/>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { login, getToken } from '@/api/api'
+import SelectSystem from './select-system.vue'
+import { defineComponent, ref, reactive, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
+import { LOGIN, GET_TOKEN, GET_TENANT_BY_USER_ID } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -52,10 +54,15 @@ interface QueryObj {
 }
 export default defineComponent({
   name: 'login_form',
+  components: {
+    SelectSystem
+  },
   setup () {
     const ctx = getCurrentInstance() as ComponentInternalInstance
     const proxy = ctx.proxy as ComponentPublicInstance
     const eye = ref(false)
+    const visible = ref(false)
+    const system = ref([])
     const loginForm = reactive({
       userName: '',
       password: ''
@@ -69,10 +76,10 @@ export default defineComponent({
       const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
       const redirectUri = query.redirectUri
       const url = `clientId=${clientId}&responseType=${responseType}`
-      login(url, loginForm).then(({ data }) => {
+      LOGIN(url, loginForm).then(({ data }) => {
         if (redirectUri) {
           // sso
-          getToken({
+          GET_TOKEN({
             clientId: clientId,
             clientSecret: clientSecret,
             grantType: 'authorization_code',
@@ -80,11 +87,20 @@ export default defineComponent({
             redirectUri: redirectUri
           }).then(res => {
             proxy.$cookies.set('token', res.data.data.token)
+            sessionStorage.setItem('userInfo', res.data.data || {})
             window.location.href = redirectUri + `?token=${res.data.data.token}`
           })
         } else {
-          // mss
           proxy.$cookies.set('token', data.data.token)
+          sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
+          // mss
+          GET_TENANT_BY_USER_ID({
+            userId: data.data.id
+          }).then((res) => {
+            console.log(res)
+            visible.value = true
+            system.value = res.data.data
+          })
         }
       })
     }
@@ -93,15 +109,11 @@ export default defineComponent({
       loginForm.password = ''
     }
 
-    onMounted(() => {
-      // const a = document.cookie
-      // console.log('110da21278ede4f87dd26fe23a6f0f0e')
-      // console.log(a)
-    })
-
     return {
       loginForm,
       eye,
+      visible,
+      system,
       clearForm,
       submit
     }

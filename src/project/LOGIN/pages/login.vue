@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 import LoginBg from './login-bg.vue'
 import LoginForm from './login-form.vue'
 
@@ -13,16 +13,6 @@ export default defineComponent({
   components: {
     LoginBg,
     LoginForm
-  },
-  setup () {
-    onMounted(() => {
-      // login().then((data) => {
-      //   console.log(data)
-      // })
-      // setTimeout(() => {
-      //   login()
-      // }, 2000)
-    })
   }
 })
 </script>
