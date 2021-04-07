@@ -4,25 +4,26 @@
       <div class="login_form_main_icon">
         <img src="@/assets/img/login/login_icon.png" alt="Icon">
       </div>
-      <div class="login_form_main_text">MDS 综合管理平台</div>
+      <div class="login_form_main_text">DF-MSS 综合管理平台</div>
       <div class="login_form_main_contain">
         <div class="login_form_main_username login_form_main_input" style="margin-bottom: 12%;">
           <p>账号:</p>
           <div class="login_form_main_input_prefix">
             <input v-model="loginForm.userName" class="input" type="text" placeholder="账号">
-            <em class="iconfont factory-zhanghao" />
+            <em class="iconfont--left iconfont factory-zhanghao" />
           </div>
         </div>
         <div class="login_form_main_input" style="margin-bottom: 11.5%;">
           <p>密码:</p>
           <div class="login_form_main_password">
             <div class="login_form_main_input_prefix">
-              <input v-model="loginForm.password" class="input" :type="eye? 'text' : 'password'" placeholder="密码">
-              <em class="iconfont factory-zu" />
+              <input v-model="loginForm.password" class="input" :type="eye? 'text' : 'password'" placeholder="密码" @keyup.enter="submit">
+              <em class="iconfont--left iconfont factory-zu" />
+              <em class="iconfont--right iconfont factory-in_biyan_fill" @click="eye = !eye" />
             </div>
-            <div class="login_form_main_password_eye" @click="eye = !eye">
-              <em class="iconfont factory-in_biyan_fill" />
-            </div>
+<!--            <div class="login_form_main_password_eye" @click="eye = !eye">-->
+<!--              <em class="iconfont factory-in_biyan_fill" />-->
+<!--            </div>-->
           </div>
           <div>
             <label class="login_form_main_btn" @click="clearForm">
@@ -132,6 +133,8 @@ export default defineComponent({
     top: 0;
     left: 0;
     &_main{
+      min-width: 450px;
+      min-height: 600px;
       display: flex;
       flex-direction: column;
       position: absolute;
@@ -161,8 +164,14 @@ export default defineComponent({
             line-height: 50px;
             text-align: center;
             position: absolute;
-            left: 14px;
             color: #5F73F0;
+          }
+          .iconfont--left{
+            left: 14px;
+          }
+          .iconfont--right{
+            right: 14px;
+            cursor: pointer;
           }
         }
         p{
@@ -186,6 +195,7 @@ export default defineComponent({
             font-size: 16px;
             line-height: 50px;
           }
+
         }
       }
       &_btn{
@@ -221,7 +231,7 @@ export default defineComponent({
         height: 50px;
         line-height: 50px;
         outline: 0;
-        padding: 0 15px 0 40px;
+        padding: 0 40px 0 40px;
         -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
         transition: border-color .2s cubic-bezier(.645,.045,.355,1);
         width: 100%;

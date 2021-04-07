@@ -37,7 +37,7 @@
     <div class="SystemLayout__container--scroll">
       <router-view v-slot="{ Component }">
         <keep-alive :include="keepAlivePages">
-          <component :is="Component"/>
+          <component :is="Component" />
         </keep-alive>
       </router-view>
     </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 import layoutTs from '@/components/layout/layoutTs'
 
 export default defineComponent({
@@ -67,9 +67,6 @@ export default defineComponent({
       tabsRefreshCurrentHandle
     } = layoutTs()
 
-    onMounted(() => {
-      console.log(route)
-    })
     return {
       route,
       keepAlivePages,

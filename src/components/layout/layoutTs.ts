@@ -138,7 +138,7 @@ export default function (): LayoutTs<any> {
   // tabs, 关闭全部
   const tabsCloseAllHandle = () => {
     mainTabs.value = []
-    menuActiveName.value = ''
+    menuActiveName.value = 'home'
     router.push('home')
   }
 

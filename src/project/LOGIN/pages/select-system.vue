@@ -19,6 +19,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { UPDATE_TENANT } from '@/api/api'
 
 export default defineComponent({
   name: 'select-system',
@@ -28,9 +29,12 @@ export default defineComponent({
   },
   setup () {
     const goSystem = (system) => {
-      localStorage.setItem('vuex', '')
-      console.log(system)
-      window.location.href = '/SYSTEM.html'
+      UPDATE_TENANT({
+        systemCode: system.systemCode
+      }).then(() => {
+        localStorage.setItem('vuex', '')
+        window.location.href = '/SYSTEM.html'
+      })
     }
 
     return {

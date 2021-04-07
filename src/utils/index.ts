@@ -51,3 +51,67 @@ export function fnAddDynamicMenuRoutes (menuList: MenuList[] = [], routes: Route
     console.log('%c!<-------------------- 动态(菜单)路由 e -------------------->', 'color:blue')
   }
 }
+
+export function isAuth (key:string): boolean {
+  let authReturn = true
+  if (key === '') {
+    authReturn = true
+  } else {
+    authReturn = JSON.parse(sessionStorage.getItem('permissions') || '[]').indexOf(key) !== -1 || false
+  }
+  return authReturn
+}
+
+/**
+ * 树形数据转换
+ * @param {*} data
+ * @param {*} id
+ * @param {*} pid
+ */
+export interface MenuBbj {
+  id: string;
+  parentId: string;
+  _level: number;
+  menuOrder: number;
+  deptIdList: never[];
+  terminal: string;
+  menuName: string;
+  menuUrl: string;
+  menuType: string;
+  permission: string;
+  menuIcon: string;
+  remark: string;
+  children: MenuBbj[]
+}
+interface Temp {
+  [key:string]: MenuBbj
+}
+
+export function treeDataTranslate (data: MenuBbj[]):MenuBbj[] {
+  const res: MenuBbj[] = []
+  const temp:Temp = {}
+  for (let i = 0; i < data.length; i++) {
+    temp[data[i].id] = data[i]
+  }
+  for (let k = 0; k < data.length; k++) {
+    if (temp[data[k].parentId] && data[k].id !== data[k].parentId) {
+      if (!temp[data[k].parentId].children) {
+        temp[data[k].parentId].children = []
+      }
+      if (!temp[data[k].parentId]._level) {
+        temp[data[k].parentId]._level = 1
+      }
+      data[k]._level = temp[data[k].parentId]._level + 1
+      temp[data[k].parentId].children.push(data[k])
+      temp[data[k].parentId].children.sort((a:MenuBbj, b:MenuBbj) => {
+        return a.menuOrder - b.menuOrder
+      })
+    } else {
+      res.push(data[k])
+      res.sort((a, b) => {
+        return a.menuOrder - b.menuOrder
+      })
+    }
+  }
+  return res
+}

@@ -12,6 +12,7 @@
 }
 .SystemLayout{
   &__header{
+    position: relative;
     z-index: 99;
     display: flex;
     flex-direction: row;
@@ -41,6 +42,16 @@
         background: #d9d9d9;
       }
     }
+    .switching {
+      display: block;
+      transition: 500ms;
+    }
+    .packup {
+      transform: rotate(0deg);
+    }
+    .open {
+      transform: rotate(180deg);
+    }
     &__badge{
       margin-right: 10px;
       .el-badge__content.is-fixed{
@@ -50,6 +61,8 @@
   }
   &__sidebar{
     background: $sidebar-bg-color;
+    overflow-y: scroll;
+    overflow-x: hidden;
     &__logo{
       width: 100%;
       height: 50px;
@@ -98,11 +111,13 @@
     }
   }
   &__container{
+    position: relative;
     background: #F1F4F8;
     flex-direction: column;
     &--scroll{
       padding: 15px;
-      height: calc(100vh - 71px);
+      margin-bottom: 30px;
+      height: calc(100vh - 101px);
       overflow: scroll;
     }
     &__tabs{

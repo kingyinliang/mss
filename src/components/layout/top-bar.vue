@@ -1,5 +1,8 @@
 <template>
   <nav class="SystemLayout__header">
+    <div class="SystemLayout__header__item" style="position: absolute;left: 10px" @click="sidebarFold = !sidebarFold">
+      <em class="iconfont factory-shouqicaidan switching" :class="{ open: sidebarFold, packup: !sidebarFold }" style="font-size: 25px;" />
+    </div>
     <!--    消息    -->
     <div class="SystemLayout__header__item">
       <el-badge class="SystemLayout__header__badge" :value="messageNum" :max="99" type="danger" :hidden="messageNum === 0">
@@ -39,19 +42,21 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import layoutTs from '@/components/layout/layoutTs'
+
 export default defineComponent({
   name: 'TopBar',
   props: {
     userInfo: Object
   },
   setup () {
-    const router = useRouter()
+    const { router, sidebarFold } = layoutTs()
     const messageNum = ref(1)
     const factoryName = ref('')
 
     return {
       router,
+      sidebarFold,
       messageNum,
       factoryName
     }

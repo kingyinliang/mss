@@ -18,9 +18,9 @@ export default defineComponent({
   setup () {
     const systemForm = reactive([
       {
-        val: '#17b3a3',
+        val: '#487bff',
         label: '系统主色',
-        scssVar: '$--color-primary'
+        scssVar: '--color-primary'
       },
       {
         val: '#00152B',

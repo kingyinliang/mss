@@ -38,6 +38,7 @@ router.beforeEach((to, from, next) => {
     }).then(({ data }) => {
       fnAddDynamicMenuRoutes(data.data.menuList, [], router, mainRouter)
       sessionStorage.setItem('menuList', JSON.stringify(data.data.menuList || []))
+      sessionStorage.setItem('permissions', JSON.stringify(data.data.permissions || '[]'))
       isAddDynamicMenuRoutes = true
       return next(Object.assign({}, to, { replace: true }))
     })

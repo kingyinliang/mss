@@ -1,5 +1,5 @@
 <template>
-  <el-aside
+  <aside
     class="SystemLayout__sidebar sidebar--"
     :style="{width: sidebarFold? '64px' : '170px'}"
     @mouseenter="showMenu"
@@ -25,7 +25,7 @@
       </el-menu-item>
       <LeftSubMenu v-for="menu in menuList" :key="menu.id" :menu="menu" />
     </el-menu>
-  </el-aside>
+  </aside>
 </template>
 
 <script>

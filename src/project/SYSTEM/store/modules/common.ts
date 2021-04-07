@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
 
 const state = {
-  sidebarFold: false,
+  sidebarFold: true,
   menuActiveName: 'home',
   mainTabsActiveName: '',
   userInfo: {},
