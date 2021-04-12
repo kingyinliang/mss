@@ -60,6 +60,15 @@ body{
   .el-tabs__item.is-active{
     color: $--color-primary!important;
   }
+  .el-transfer__button{
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: block;
+    min-height: 0;
+    margin-left: 0!important;
+    padding: 10px;
+  }
   //  dialog
   .el-dialog__header{
     background-color: $--color-primary;
@@ -67,6 +76,11 @@ body{
       color: white;
     }
   }
+
+}
+.k-pages{
+  text-align: right;
+  padding-top: 15px;
 }
 /* scrollbar */
 .el-table--scrollable-y .el-table__fixed-right {

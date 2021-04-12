@@ -4,7 +4,7 @@
       <div class="login_form_main_icon">
         <img src="@/assets/img/login/login_icon.png" alt="Icon">
       </div>
-      <div class="login_form_main_text">DF-MSS 综合管理平台</div>
+<!--      <div class="login_form_main_text">DF-MSS 综合管理平台</div>-->
       <div class="login_form_main_contain">
         <div class="login_form_main_username login_form_main_input" style="margin-bottom: 12%;">
           <p>账号:</p>
@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import SelectSystem from './select-system.vue'
-import { defineComponent, ref, reactive, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { LOGIN, GET_TOKEN, GET_TENANT_BY_USER_ID } from '@/api/api'
+import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
+import { LOGIN, GET_LOGIN_INFO, GET_TOKEN, GET_TENANT_BY_USER_ID } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -52,6 +52,7 @@ interface QueryObj {
   responseType?: string;
   clientSecret?: string;
   redirectUri?: string;
+  token?: string;
 }
 export default defineComponent({
   name: 'login_form',
@@ -69,6 +70,19 @@ export default defineComponent({
       password: ''
     })
 
+    const init = () => {
+      const query:QueryObj = proxy.$route.query
+
+      if (query.token) {
+        proxy.$cookies.set('token', query.token)
+        GET_LOGIN_INFO({
+          accessToken: query.token,
+          tenant: 'MSS'
+        }).then(({ data }) => {
+          sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
+        })
+      }
+    }
     const submit = () => {
       const query:QueryObj = proxy.$route.query
 
@@ -109,6 +123,10 @@ export default defineComponent({
       loginForm.userName = ''
       loginForm.password = ''
     }
+
+    onMounted(() => {
+      init()
+    })
 
     return {
       loginForm,

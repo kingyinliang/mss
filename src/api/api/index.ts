@@ -4,6 +4,9 @@ import Http from '../http/axios'
 export function LOGIN (url: string, params = {}):Promise<AxiosResponse> {
   return Http.post('/oauth2/authorize?' + url, params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
+export function GET_LOGIN_INFO (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/login', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
 export function GET_TOKEN (params = {}):Promise<AxiosResponse> {
   return Http.post('/oauth2/accessToken', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
@@ -60,4 +63,46 @@ export function MENU_ADD (params = {}):Promise<AxiosResponse> {
 }
 export function MENU_UPDATE (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysMenu/update', params)
+}
+export function APP_VERSION (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysApp/getLastedVersion', params)
+}
+export function APP_SAVE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysApp/save', params)
+}
+export function UPLOAD_APK (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysApp/getUploadUrl', params)
+}
+export function ROLE_LIST (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRole/query', params)
+}
+export function ROLE_REMOVE (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysRole/remove', params)
+}
+export function ROLE_ADD (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRole/insert', params)
+}
+export function ROLE_UPDATE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRole/update', params)
+}
+export function ROLE_USER (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUserRole/roleUserList', params)
+}
+export function ROLE_USER_ADD (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUserRole/insert', params)
+}
+export function DEPT_ALL (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysDept/dropDown', params)
+}
+export function ROLE_DEPT (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRoleDept/roleDeptList', params)
+}
+export function ROLE_DEPT_ADD (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRoleDept/insert', params)
+}
+export function ROLE_MENU_ADD (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRoleMenu/insert', params)
+}
+export function ROLE_MENU_LIST (params = {}):Promise<AxiosResponse> {
+  return Http.get('https://api-dev-monkey.xueersi.com/rbac/api/v1/admin/resources/url/list', params)
 }

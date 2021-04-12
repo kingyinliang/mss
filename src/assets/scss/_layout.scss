@@ -7,7 +7,7 @@
 }
 
 // animation
-.SystemLayout__sidebar,.el-menu{
+.SystemLayout__sidebar,.SystemLayout__container,.el-menu{
   transition: inline-block 0.3s, left 0.3s, width 0.3s, margin-left 0.3s, font-size 0.3s;
 }
 .SystemLayout{
@@ -114,6 +114,10 @@
     position: relative;
     background: #F1F4F8;
     flex-direction: column;
+    width: calc(100vw - 64px);
+    &--open{
+      width: calc(100vw - 170px);
+    }
     &--scroll{
       padding: 15px;
       margin-bottom: 30px;

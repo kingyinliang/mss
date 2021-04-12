@@ -1,5 +1,5 @@
 <template>
-  <section class="SystemLayout__container system_container">
+  <section class="SystemLayout__container system_container" :class="{'SystemLayout__container--open': !sidebarFold}">
     <el-tabs
       v-if="route.meta.isTab"
       class="SystemLayout__container__tabs"
@@ -56,6 +56,7 @@ export default defineComponent({
   setup () {
     const {
       route,
+      sidebarFold,
       keepAlivePages,
       mainTabs,
       mainTabsActiveName,
@@ -69,6 +70,7 @@ export default defineComponent({
 
     return {
       route,
+      sidebarFold,
       keepAlivePages,
       mainTabs,
       mainTabsActiveName,

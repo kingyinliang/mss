@@ -65,15 +65,21 @@ export class HttpManager {
         return Promise.reject(res)
       } else if (res.data.code === HttpCode.WARNING) {
         ElNotification({ title: '警告', message: res.data.msg, type: 'warning' })
+        this.tryHideFullScreenLoading() // 关闭遮罩
         return Promise.reject(res)
       } else if (res.data.code === HttpCode.ERROR) {
         ElNotification({ title: '错误', message: res.data.msg, type: 'error', duration: 0 })
+        this.tryHideFullScreenLoading() // 关闭遮罩
         return Promise.reject(res)
       }
       ElNotification({ title: '错误', message: res.data.msg, type: 'error', duration: 0 })
       this.tryHideFullScreenLoading() // 关闭遮罩
       return Promise.reject(res)
-    }, error => Promise.reject(error))
+    }, error => {
+      ElNotification({ title: '错误', message: '网络请求失败，请刷新重试', type: 'error' })
+      this.tryHideFullScreenLoading() // 关闭遮罩
+      return Promise.reject(error)
+    })
   }
 
   showFullScreenLoading (): void {
