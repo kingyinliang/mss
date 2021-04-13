@@ -38,13 +38,13 @@
       </div>
     </div>
   </div>
-  <SelectSystem v-model="visible" :system="system"/>
+  <SelectSystem v-model="visible"/>
 </template>
 
 <script lang="ts">
-import SelectSystem from './select-system.vue'
+import SelectSystem from '@/components/layout/select-system.vue'
 import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { LOGIN, GET_LOGIN_INFO, GET_TOKEN, GET_TENANT_BY_USER_ID } from '@/api/api'
+import { LOGIN, GET_LOGIN_INFO, GET_TOKEN, UPDATE_TENANT } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -53,6 +53,7 @@ interface QueryObj {
   clientSecret?: string;
   redirectUri?: string;
   token?: string;
+  tenant?: string;
 }
 export default defineComponent({
   name: 'login_form',
@@ -80,6 +81,13 @@ export default defineComponent({
           tenant: 'MSS'
         }).then(({ data }) => {
           sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
+          UPDATE_TENANT({
+            systemCode: query.tenant
+          }).then(() => {
+            localStorage.setItem('vuex', '')
+            sessionStorage.setItem('systemName', query.tenant || '')
+            window.location.href = '/SYSTEM.html'
+          })
         })
       }
     }
@@ -109,13 +117,7 @@ export default defineComponent({
           proxy.$cookies.set('token', data.data.token)
           sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
           // mss
-          GET_TENANT_BY_USER_ID({
-            userId: data.data.id
-          }).then((res) => {
-            console.log(res)
-            visible.value = true
-            system.value = res.data.data
-          })
+          visible.value = true
         }
       })
     }

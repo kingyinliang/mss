@@ -18,26 +18,37 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { UPDATE_TENANT } from '@/api/api'
+import { defineComponent, watch, toRefs, ref } from 'vue'
+import { GET_TENANT_BY_USER_ID, UPDATE_TENANT } from '@/api/api'
 
 export default defineComponent({
   name: 'select-system',
   props: {
-    modelValue: Boolean,
-    system: Array
+    modelValue: Boolean
   },
-  setup () {
+  setup (props) {
+    const { modelValue } = toRefs(props)
+    const system = ref([])
+
     const goSystem = (system) => {
       UPDATE_TENANT({
         systemCode: system.systemCode
       }).then(() => {
         localStorage.setItem('vuex', '')
+        sessionStorage.setItem('systemName', system.systemCode)
         window.location.href = '/SYSTEM.html'
       })
     }
-
+    watch(modelValue, () => {
+      const userInfo = sessionStorage.getItem('userInfo')
+      GET_TENANT_BY_USER_ID({
+        userId: userInfo.id
+      }).then((res) => {
+        system.value = res.data.data
+      })
+    })
     return {
+      system,
       goSystem
     }
   }
@@ -55,6 +66,7 @@ export default defineComponent({
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
   &_main{
     width: 80%;
     display: flex;

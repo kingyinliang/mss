@@ -52,3 +52,34 @@
     background: $--color-primary;
   }
 }
+.org-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 232, 232, 1);
+  border-radius: 4px;
+  box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.09);
+
+  .org-card_title {
+    height: 40px;
+    padding-left: 10px;
+    color: white;
+    line-height: 40px;
+    background: $--color-primary;
+  }
+
+  .filter-input {
+    padding: 6px 10px;
+  }
+
+  .tree-main {
+    flex: 1;
+    overflow-y: scroll;
+  }
+  .detail-main {
+    padding: 16px 10px 0 10px;
+    overflow-y: scroll;
+  }
+}

@@ -1,5 +1,5 @@
 <template>
-  <mds-card title="角色信息列表" name="role" :pack-up="false" style="margin-bottom: 0; background: #fff;">
+  <mds-card title="角色信息列表" name="role" :pack-up="false" style="background: #fff;">
     <template #titleBtn>
       <div style="float: right; height: 32px; margin-bottom: 10px;">
         <el-input v-model="roleName" placeholder="角色名称" size="small" clearable style="width: 180px; margin-right: 16px;" @clear="getItemsList()" />

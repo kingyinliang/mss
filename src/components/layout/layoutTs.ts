@@ -1,12 +1,15 @@
-import { computed, nextTick } from 'vue'
+import { ComponentInternalInstance, computed, getCurrentInstance, nextTick, ref, Ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute, Router, RouteLocationNormalizedLoaded, RouteLocationNormalized } from 'vue-router'
 import { WritableComputedRef } from '@vue/reactivity'
+import { USER_QUIT } from '@/api/api'
+import { updateIsAddDynamicMenuRoutes } from '@/project/SYSTEM/router'
 
 // eslint-disable-next-line
 type Fn<T> = (ctx?: any) => T
 
 interface LayoutTs<T> {
+  systemVisible: Ref<boolean>
   router: Router
   route: RouteLocationNormalizedLoaded
   userInfo: WritableComputedRef<T>
@@ -19,6 +22,7 @@ interface LayoutTs<T> {
   mainTabsActiveName: WritableComputedRef<T>
   gotoRouteHandle: Fn<T>
   routeHandle: Fn<T>
+  quit: Fn<T>
   showMenu: Fn<T>
   goHome: Fn<T>
   selectedTabHandle: Fn<T>
@@ -49,9 +53,14 @@ interface MainTabs {
 
 // eslint-disable-next-line
 export default function (): LayoutTs<any> {
+  const ctx = getCurrentInstance() as ComponentInternalInstance
+  // eslint-disable-next-line
+  const proxy = ctx.proxy as any
   const store = useStore()
   const router = useRouter()
   const route = useRoute()
+
+  const systemVisible = ref(false)
 
   const userInfo = computed({
     get: () => store.state.common.userInfo,
@@ -197,7 +206,22 @@ export default function (): LayoutTs<any> {
     }
   }
 
+  const quit = () => {
+    proxy.$confirm('确定进行[退出]操作?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      USER_QUIT().then(() => {
+        proxy.$cookies.remove('token')
+        updateIsAddDynamicMenuRoutes()
+        window.location.href = `${process.env.VUE_APP_HOST}`
+      })
+    })
+  }
+
   return {
+    systemVisible,
     router,
     route,
     userInfo,
@@ -208,6 +232,7 @@ export default function (): LayoutTs<any> {
     dynamicMenuRoutes,
     mainTabs,
     keepAlivePages,
+    quit,
     removeTabHandle,
     selectedTabHandle,
     tabsCloseCurrentHandle,

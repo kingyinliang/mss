@@ -127,3 +127,18 @@ export function ORG_TREE_API (params = {}):Promise<AxiosResponse> {
 export function USER_DELETE (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysUser/delete', params)
 }
+export function USER_BATCH_QUERY (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/batchQueryById', params)
+}
+export function DICT_QUERY (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysDictItem/dropDown', params)
+}
+export function USER_INSERT (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/insert', params)
+}
+export function USER_UPDATE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/update', params)
+}
+export function USER_QUIT (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysUser/quit', params)
+}

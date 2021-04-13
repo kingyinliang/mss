@@ -9,13 +9,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import TopBar from './top-bar.vue'
 import LeftBar from './left-bar.vue'
 import MainContent from './main_content.vue'
 import layoutTs from '@/components/layout/layoutTs'
 
+interface SystemColorType{
+  scssVar: string
+  val: string
+}
 export default defineComponent({
   name: 'SystemLayout',
   components: {
@@ -32,6 +36,14 @@ export default defineComponent({
     const { userInfo, menuList, routeHandle, dynamicMenuRoutes } = layoutTs()
 
     onBeforeRouteUpdate(routeHandle)
+    onMounted(() => {
+      if (sessionStorage.getItem('SystemColor')) {
+        const SystemColor = JSON.parse(sessionStorage.getItem('SystemColor') as string)
+        SystemColor.forEach((item:SystemColorType) => {
+          document.getElementsByTagName('body')[0].style.setProperty(item.scssVar, item.val)
+        })
+      }
+    })
 
     return {
       menuList,

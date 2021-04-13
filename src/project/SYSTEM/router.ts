@@ -44,5 +44,7 @@ router.beforeEach((to, from, next) => {
     })
   }
 })
-
+export function updateIsAddDynamicMenuRoutes ():void {
+  isAddDynamicMenuRoutes = false
+}
 export default router

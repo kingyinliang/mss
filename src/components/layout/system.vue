@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import { defineComponent, reactive, onMounted } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'system',
   setup () {
-    const systemForm = reactive([
+    const systemForm = ref([
       {
         val: '#487bff',
         label: '系统主色',
@@ -45,28 +45,14 @@ export default defineComponent({
     ])
 
     const colorChange = (item) => {
+      sessionStorage.setItem('SystemColor', JSON.stringify(systemForm.value || []))
       document.getElementsByTagName('body')[0].style.setProperty(item.scssVar, item.val)
     }
 
     onMounted(() => {
-      const colourBlend = (c1, c2, ratio) => {
-        ratio = Math.max(Math.min(Number(ratio), 1), 0)
-        const r1 = parseInt(c1.substring(1, 3), 16)
-        const g1 = parseInt(c1.substring(3, 5), 16)
-        const b1 = parseInt(c1.substring(5, 7), 16)
-        const r2 = parseInt(c2.substring(1, 3), 16)
-        const g2 = parseInt(c2.substring(3, 5), 16)
-        const b2 = parseInt(c2.substring(5, 7), 16)
-        console.log(r1)
-        let r = Math.round(r1 * (1 - ratio) + r2 * ratio)
-        let g = Math.round(g1 * (1 - ratio) + g2 * ratio)
-        let b = Math.round(b1 * (1 - ratio) + b2 * ratio)
-        r = ('0' + (r || 0).toString(16)).slice(-2)
-        g = ('0' + (g || 0).toString(16)).slice(-2)
-        b = ('0' + (b || 0).toString(16)).slice(-2)
-        return '#' + r + g + b
+      if (sessionStorage.getItem('SystemColor')) {
+        systemForm.value = JSON.parse(sessionStorage.getItem('SystemColor'))
       }
-      console.log(colourBlend('#ff0000', '#3333ff', 0.3))
     })
 
     return {

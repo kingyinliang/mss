@@ -46,11 +46,13 @@
       <el-pagination :current-page="currPage" :page-sizes="[10, 20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </template>
   </OrgView>
+  <StaffAddOrUpdate ref="addOrUpdateItemRef" v-model="isDialogShow" :org-tree="orgTree" @refreshDataList="getItemsList"/>
 </template>
 
 <script lang="ts">
-import { ComponentInternalInstance, ComponentPublicInstance, defineComponent, getCurrentInstance, ref } from 'vue'
+import { ComponentInternalInstance, ComponentPublicInstance, defineComponent, getCurrentInstance, ref, nextTick } from 'vue'
 import { USER_LIST, USER_DELETE } from '@/api/api'
+import StaffAddOrUpdate from './StaffAddOrUpdate.vue'
 
 interface DeptObject {
   id: string;
@@ -60,6 +62,9 @@ interface DeptObject {
 }
 export default defineComponent({
   name: 'Staff',
+  components: {
+    StaffAddOrUpdate
+  },
   setup () {
     const ctx = getCurrentInstance() as ComponentInternalInstance
     const proxy = ctx.proxy as ComponentPublicInstance
@@ -72,7 +77,9 @@ export default defineComponent({
     const deptID = ref('')
     const deptName = ref('')
     const factory = ref('')
+    const addOrUpdateItemRef = ref()
     const isDialogShow = ref(false)
+    const orgTree = ref([] as DeptObject[])
 
     const showOrgDetail = (data: DeptObject) => {
       deptID.value = data.id
@@ -80,6 +87,7 @@ export default defineComponent({
       getItemsList()
     }
     const setDeptId = (data: DeptObject[]) => {
+      orgTree.value = data
       deptID.value = data[0].id
       deptName.value = data[0].deptName
       factory.value = data[0].factory
@@ -104,8 +112,14 @@ export default defineComponent({
         isDialogShow.value = false
       })
     }
-    const addOrUpdateItem = () => {
-      console.log(1)
+    const addOrUpdateItem = async (id:string) => {
+      if (deptID.value) {
+        isDialogShow.value = true
+        await nextTick()
+        addOrUpdateItemRef.value.init(deptID.value, deptName.value, factory.value, id)
+      } else {
+        proxy.$errorToast('请先选择部门')
+      }
     }
     const removeItems = () => {
       const idList: string[] = []
@@ -134,12 +148,15 @@ export default defineComponent({
     }
 
     return {
+      orgTree,
+      isDialogShow,
       search,
       totalCount,
       currPage,
       pageSize,
       targetInfoList,
       multipleSelection,
+      addOrUpdateItemRef,
       removeItems,
       addOrUpdateItem,
       getItemsList,
