@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { ROLE_MENU_LIST, ROLE_MENU_ADD } from '@/api/api'
+import { ROLE_MENU_LIST, ROLE_MENU_ADD, ROLE_MENU } from '@/api/api'
 
 interface MenuData{
   id: string
@@ -46,19 +46,25 @@ export default defineComponent({
 
     const init = (id: string) => {
       roleId.value = id
-      isDialogShow.value = true
-      ROLE_MENU_LIST()
-      // ROLE_MENU_LIST({
-      //   roleId: id
-      // }).then(({ data }) => {
-      //   const maenData = (data.data as MenuData[]).filter(item => item.id !== '0')
-      //   maenData.forEach(item => {
-      //     item.menuName = item.menuName + ' ' + item.remark
-      //   })
-      //   menuList.value = translateTreeData(maenData)
-      // })
+      ROLE_MENU_LIST({
+        roleId: id
+      }).then(({ data }) => {
+        const maenData = (data.data as MenuData[]).filter(item => item.id !== '0')
+        maenData.forEach(item => {
+          item.menuName = item.menuName + ' ' + item.remark
+        })
+        menuList.value = translateTreeData(maenData)
+      }).then(() => {
+        isDialogShow.value = true
+      }).then(() => {
+        ROLE_MENU({
+          roleId: id
+        }).then((res) => {
+          menuListTreeRef.value.setCheckedKeys(res.data.data)
+        })
+      })
     }
-    const translateTreeData = (data: MenuData[], id = 'id', pid = 'parentId'): MenuData[] => {
+    const translateTreeData = (data: MenuData[]): MenuData[] => {
       const res = []
       const temp:Temp = {}
       for (let i = 0; i < data.length; i++) {
@@ -91,6 +97,7 @@ export default defineComponent({
     }
 
     return {
+      menuListTreeRef,
       isDialogShow,
       menuList,
       init,

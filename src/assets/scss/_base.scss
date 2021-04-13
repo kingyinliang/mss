@@ -69,6 +69,10 @@ body{
     margin-left: 0!important;
     padding: 10px;
   }
+  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+    background-color: $--color-primary!important;
+    border-color: $--color-primary!important;
+  }
   //  dialog
   .el-dialog__header{
     background-color: $--color-primary;
@@ -76,11 +80,16 @@ body{
       color: white;
     }
   }
-
+  .el-tree-node__expand-icon {
+    color: $--color-primary;
+  }
+  .el-tree-node__expand-icon.is-leaf {
+    color: transparent;
+  }
 }
-.k-pages{
+.el-pagination{
   text-align: right;
-  padding-top: 15px;
+  padding-top: 15px!important;
 }
 /* scrollbar */
 .el-table--scrollable-y .el-table__fixed-right {

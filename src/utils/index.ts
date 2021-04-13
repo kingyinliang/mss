@@ -76,6 +76,7 @@ export interface MenuBbj {
   deptIdList: never[];
   terminal: string;
   menuName: string;
+  parentName: string;
   menuUrl: string;
   menuType: string;
   permission: string;

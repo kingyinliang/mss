@@ -185,6 +185,7 @@ export default defineComponent({
     const visible = ref(false)
 
     const init = (row?: MenuBbj) => {
+      console.log(row)
       GET_DEPT({
         deptType: ['FACTORY', 'FAKE_FACTORY']
       }).then(({ data }) => {
@@ -223,6 +224,7 @@ export default defineComponent({
           dataForm.value.menuType = row.menuType
           dataForm.value.menuName = row.menuName
           dataForm.value.parentId = row.parentId
+          dataForm.value.parentName = row.parentName
           dataForm.value.menuUrl = row.menuUrl
           dataForm.value.permission = row.permission
           dataForm.value.menuOrder = row.menuOrder

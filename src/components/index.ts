@@ -1,10 +1,12 @@
 import { App, ComponentOptions } from 'vue'
 import MdsCard from './mds-card'
 import TableTreeColumn from './TableTreeColumn'
+import OrgView from './OrgView'
 
 const components: ComponentOptions[] = [
   MdsCard,
-  TableTreeColumn
+  TableTreeColumn,
+  OrgView
 ]
 
 const install = function (app: App):void {
@@ -15,5 +17,7 @@ const install = function (app: App):void {
 
 export default {
   install,
-  MdsCard
+  MdsCard,
+  TableTreeColumn,
+  OrgView
 }

@@ -20,17 +20,17 @@
       <el-table-column prop="changed" label="修改时间" width="180" />
       <el-table-column label="操作" min-width="430" fixed="right">
         <template #default="scope">
-          <el-button v-if="isAuth('roleUserCfg')" type="text" class="role__btn" @click="manageUser(scope.row.id)">
-            人员管理
-          </el-button>
-          <el-button v-if="isAuth('')" type="text" class="role__btn" @click="manageDataAuthority(scope.row)">
-            数据权限
-          </el-button>
           <el-button v-if="isAuth('roleDeptCfg')" type="text" class="role__btn" @click="manageDepartment(scope.row.id)">
             部门分配
           </el-button>
           <el-button v-if="isAuth('roleMenuCfg')" type="text" class="role__btn" @click="manageFunction(scope.row.id)">
             功能分配
+          </el-button>
+          <el-button v-if="isAuth('roleUserCfg')" type="text" class="role__btn" @click="manageUser(scope.row.id)">
+            人员管理
+          </el-button>
+          <el-button v-if="isAuth('')" type="text" class="role__btn" @click="manageDataAuthority(scope.row)">
+            数据权限
           </el-button>
           <el-button v-if="isAuth('roleEdit')" type="text" class="role__btn" @click="addOrUpdateItem(scope.row)">
             修改角色
@@ -41,9 +41,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="k-pages">
-      <el-pagination :current-page="currPage" :page-sizes="[10, 20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    </div>
+    <el-pagination :current-page="currPage" :page-sizes="[10, 20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </mds-card>
   <RoleAddAndUpdate ref="addOrUpdateItemRef" v-if="isRoleAddOrUpdateShow" @refreshDataList="getItemsList" />
   <DepartmentManage ref="manageDepartmentRef" v-if="isDepartmentManageShow" @refreshDataList="getItemsList" />

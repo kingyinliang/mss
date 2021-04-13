@@ -104,5 +104,26 @@ export function ROLE_MENU_ADD (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysRoleMenu/insert', params)
 }
 export function ROLE_MENU_LIST (params = {}):Promise<AxiosResponse> {
-  return Http.get('https://api-dev-monkey.xueersi.com/rbac/api/v1/admin/resources/url/list', params)
+  return Http.get('/sysMenu/selectByRole', params)
+}
+export function ROLE_MENU (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRoleMenu/roleMenuList', params)
+}
+export function USER_LIST (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/userRole/query', params)
+}
+export function USER_PASSWORD_RESET (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysUser/password/reset', params)
+}
+export function USER_ROLE_DROPDOWN (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysRole/dropDown', params)
+}
+export function USER_ROLE_UPDATE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUserRole/userRole/insert', params)
+}
+export function ORG_TREE_API (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysDept/dropDown', params)
+}
+export function USER_DELETE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/delete', params)
 }
