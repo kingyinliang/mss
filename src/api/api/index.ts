@@ -142,3 +142,21 @@ export function USER_UPDATE (params = {}):Promise<AxiosResponse> {
 export function USER_QUIT (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysUser/quit', params)
 }
+export function ORG_DETAIL (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysDept/query', params)
+}
+export function ORG_UPDATE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysDept/update', params)
+}
+export function ORG_DELETE (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysDept/remove', params)
+}
+export function ORG_ADD (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysDept/insert', params)
+}
+export function DOWNLOAD_FILE (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysFile/download', params)
+}
+export function UPLOAD_FILE (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysFile/upload', params)
+}

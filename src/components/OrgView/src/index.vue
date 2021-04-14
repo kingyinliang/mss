@@ -102,7 +102,7 @@ export default defineComponent({
     }
 
     // 组织架构右击
-    const treeNodeContextMenu = (event: EventTarget, object: DeptObject) => {
+    const treeNodeContextMenu = (event: MouseEvent, object: DeptObject) => {
       emit('treeNodeContextMenu', event, object)
     }
 
