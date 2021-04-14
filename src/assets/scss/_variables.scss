@@ -1,5 +1,11 @@
 // 变量
-$--color-primary: #17b3a3;
+$--color-primary: var(--color-primary, #487bff);
+
+// sidebar
+$sidebar-bg-color: var(--sidebar-bg-color, #00152B);
+$sidebar-text-color: var(--sidebar-text-color, #8a979e);
+$sidebar-active-bg-color: var(--sidebar-active-bg-color, #1890ff);
+$sidebar-active-text-color: var(--sidebar-active-text-color, #ccd0d5);
 
 // blue
 $main-color: #487bff;
@@ -26,4 +32,5 @@ $sys-font-title-color: #333;
 $sys-font-main-color: #666;
 // 文字辅助颜色
 $sys-font-sub-color: #999;
+
 

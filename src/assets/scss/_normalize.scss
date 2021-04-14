@@ -467,7 +467,7 @@ body {
     background-color: #fff;
 }
 a {
-    color: mix(#fff, $--color-primary, 20%);
+    color: $--color-primary;
     text-decoration: none;
     &:focus,
     &:hover {
