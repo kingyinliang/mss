@@ -187,3 +187,6 @@ export function PROPERTY_SAVE(params = {}): Promise<AxiosResponse> { // 系统�
 export function PROPERTY_DATA_QUERY(params = {}): Promise<AxiosResponse> { // 系统管理-权限属性对应表数据-列表
   return Http.get('/sysProperty/data/query', params);
 }
+export function PROPERTY_DATA_INSERT(params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-新增
+  return Http.post('/sysProperty/insert', params);
+}

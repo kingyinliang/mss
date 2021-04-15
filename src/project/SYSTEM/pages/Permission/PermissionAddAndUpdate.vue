@@ -1,6 +1,6 @@
 <template>
-    <el-dialog :title="targetID ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" :visible.sync="isDialogShow" @close="closeDialog">
-        <el-form ref="dataForm" :model="dataForm" label-width="170px" :rules="checkRules">
+    <el-dialog :title="dataForm.id ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" v-model:visible="isDialogShow" @close="closeDialog">
+        <el-form ref="dataFormRef" :model="dataForm" label-width="170px" :rules="checkRules">
             <el-form-item label="属性编码：" prop="propertyCode">
                 <el-input v-model="dataForm.propertyCode" placeholder="请输入" clearable />
             </el-form-item>
@@ -38,24 +38,54 @@
                 <el-input v-model="dataForm.remark" placeholder="请输入" clearable />
             </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button class="j_closeBtn" @click="closeDialog">取消</el-button>
-            <el-button type="primary" @click="submitDataForm">确定</el-button>
-        </span>
+        <template #footer>
+            <span  class="dialog-footer">
+                <el-button class="j_closeBtn" @click="closeDialog">取消</el-button>
+                <el-button type="primary" @click="submitDataForm">确定</el-button>
+            </span>
+        </template>
+
     </el-dialog>
 </template>
 
-<script>
-    import { SYSTEM_API } from 'common/api/api';
-    export default {
-        name: 'RoleaddAndUpdate',
-        data() {
-            return {
-                targetID: '',
-                isDialogShow: false,
-                dataForm: {
-                },
-                checkRules: {
+<script lang="ts">
+    import { defineComponent, ref } from 'vue'
+    import { PROPERTY_UPDATE, PROPERTY_DATA_INSERT } from '@/api/api'
+
+
+    type TargetInfoList = {
+      id:string,
+      propertyCode:string,
+      propertyName:string,
+      propertyTable:string,
+      propertyType:string,
+      propertyKey:string,
+      propertyParentKey:string,
+      privilegeIdentity:string,
+      privilegeIdentityName:string,
+      remark:string,
+    }
+
+    export default defineComponent({
+        name: 'PermissionAddAndUpdate',
+        emits: ['refreshDataList'],
+        setup(props, { emit }) {
+            // const targetID = ref('')
+            const isDialogShow = ref(false)
+            const dataForm = ref({
+                      id: '',
+                      propertyCode: '',
+                      propertyName: '',
+                      propertyTable: '',
+                      propertyType: '',
+                      propertyKey: '',
+                      propertyParentKey: '',
+                      privilegeIdentity: '',
+                      privilegeIdentityName: '',
+                      remark: ''
+                    })
+            const dataFormRef = ref()
+            const checkRules = {
                     propertyCode: [
                         { required: true, message: '请输入属性编码', trigger: 'blur' }
                     ],
@@ -81,52 +111,63 @@
                         { required: true, message: '请输入属性表权限标识名称', trigger: 'blur' }
                     ]
                 }
-            };
-        },
-        methods: {
-            init(obj) {
+
+            const init = (obj:TargetInfoList) => {
                 if (obj) {
-                    this.targetID = obj.id;
-                    this.dataForm = obj
+                    // targetID.value = obj.id;
+                    dataForm.value = JSON.parse(JSON.stringify(obj))
                 } else {
-                    this.targetID = '';
-                    this.dataForm = {};
+                    // targetID.value = '';
+                    dataForm.value = {
+                      id: '',
+                      propertyCode: '',
+                      propertyName: '',
+                      propertyTable: '',
+                      propertyType: '',
+                      propertyKey: '',
+                      propertyParentKey: '',
+                      privilegeIdentity: '',
+                      privilegeIdentityName: '',
+                      remark: ''
+                    };
                 }
-                this.isDialogShow = true;
-            },
-            submitDataForm() {
-                this.$refs.dataForm.validate(valid => {
+                isDialogShow.value = true;
+            }
+
+
+            const submitDataForm = () => {
+                dataFormRef.value.validate((valid:boolean) => {
                     if (valid) {
-                        if (this.targetID) {
-                            // 修改
-                            SYSTEM_API.SYS_PERMISSION_ATTRIBUTE_UPDATE_API(
-                             this.dataForm
-                            ).then(() => {
-                                this.$emit('refreshDataList');
-                                this.isDialogShow = false;
-                            }).catch(() => {
-                                //
-                            });
-                        } else {
-                            // 新增
-                            SYSTEM_API.SYS_PERMISSION_ATTRIBUTE_INSERT_API(this.dataForm).then(() => {
-                                this.$emit('refreshDataList');
-                                this.isDialogShow = false;
-                            }).catch(() => {
-                                //
-                            });
-                        }
+                      const http = dataForm.value.id !== '' ? PROPERTY_UPDATE : PROPERTY_DATA_INSERT
+                      http(dataForm.value).then(() => {
+                        emit('refreshDataList')
+                        isDialogShow.value = false
+                      })
                     }
                 });
-            },
+            }
+
             // 重置
-            closeDialog() {
-                document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
-                this.$refs.dataForm.resetFields();
-                this.isDialogShow = false
+            const closeDialog = () => {
+                // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
+                dataFormRef.value.resetFields();
+                isDialogShow.value = false
+            }
+
+
+            return {
+              init,
+              dataFormRef,
+              closeDialog,
+              isDialogShow,
+              submitDataForm,
+              checkRules,
+              dataForm
             }
         }
-    };
+
+
+    });
 </script>
 
 <style scoped></style>

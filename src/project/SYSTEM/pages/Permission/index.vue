@@ -3,7 +3,7 @@
  * @Anthor: Telliex
  * @Date: 2021-04-14 10:31:04
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-15 14:55:20
+ * @LastEditTime: 2021-04-15 18:19:43
 -->
 <template>
     <div class="header_main">
@@ -18,7 +18,7 @@
                     </el-button>
                 </div>
             </template>
-            <el-table ref="targetInfoList" class="newTable" header-row-class-name="tableHead" :data="targetInfoList.slice((currPage - 1) * pageSize, (currPage - 1) * pageSize + pageSize)" :height="mainClientHeight - 62 - 47" border tooltip-effect="dark" style="width: 100%;">
+            <el-table ref="targetInfoList" class="newTable" header-row-class-name="tableHead" :data="targetInfoList.slice((currPage - 1) * pageSize, (currPage - 1) * pageSize + pageSize)" border tooltip-effect="dark" style="width: 100%;">
                 <el-table-column type="index" label="序号" :index="indexMethod" width="55" align="center" fixed />
                 <el-table-column prop="propertyName" label="属性名称" :show-overflow-tooltip="true" min-width="150" />
                 <el-table-column prop="propertyTable" label="属性所在表表名" :show-overflow-tooltip="true" width="150" />
@@ -46,17 +46,30 @@
                 <el-pagination :current-page="currPage" :page-sizes="[10, 20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
             </el-row>
         </mds-card>
-        <permission-add-or-update v-if="isPermissionAddOrUpdateShow" ref="addOrUpdateItem" @refreshDataList="getItemsList(true)" />
-        <permission-data-info v-if="isPermissionDataInfoShow" ref="dataInfo" @refreshDataList="getItemsList(true)" />
+        <permission-add-or-update v-if="isPermissionAddOrUpdateShow" ref="addOrUpdateItemRef" @refreshDataList="getItemsList(true)" />
+        <permission-data-info v-if="isPermissionDataInfoShow" ref="dataInfoRef" @refreshDataList="getItemsList(true)" />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, nextTick, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import PermissionAddOrUpdate from './PermissionAddAndUpdate.vue'
 import PermissionDataInfo from './PermissionDataInfo.vue'
-import { PROPERTY_QUERY } from '@/api/api'
+import { PROPERTY_QUERY, PROPERTY_DELETE } from '@/api/api'
+
 // import { SYSTEMSETUP_API } from '@/api/api';
+
+type TargetInfoList = {
+  propertyName:string,
+  propertyTable:string,
+  propertyType:string,
+  propertyKey:string,
+  propertyParentKey:string,
+  privilegeIdentity:string,
+  privilegeIdentityName:string,
+  remark:string,
+}
+
 
 export default defineComponent({
     name: 'PermissionManages',
@@ -65,100 +78,119 @@ export default defineComponent({
       PermissionDataInfo
     },
     setup() {
-      const factoryID = sessionStorage.getItem('factory').id// 工厂名称
-      const isPermissionAddOrUpdateShow= ref(false)
-      const isPermissionDataInfoShow= ref(false)
+        const ctx = getCurrentInstance() as ComponentInternalInstance
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const proxy = ctx.proxy as any
+        // const factoryID = sessionStorage.getItem('factory').id // 工厂名称
+        const isPermissionAddOrUpdateShow = ref(false)
+        const isPermissionDataInfoShow = ref(false)
 
-      const controllableForm= ref({
-        username: ''
-      })
-      const menuList= ref ([])
-      const currPage= ref (1)
-      const pageSize= ref(10)
-      const totalCount= ref(1)
-      const targetInfoList= ref([])
-      const currentComponent= ref('')
+        // const controllableForm = ref({
+        //   username: ''
+        // })
+        // const menuList = ref([])
+        const currPage = ref(1)
+        const pageSize = ref(10)
+        const totalCount = ref(1)
+        const targetInfoList = ref([])
+        // const currentComponent = ref('')
+        const addOrUpdateItemRef = ref()
+        const dataInfoRef = ref()
+
+
+        // 序号
+        const indexMethod = (index: number) => {
+          return index + 1 + (Number(currPage.value) - 1) * Number(pageSize.value)
+        }
+        // 获取角色列表
+        const getItemsList = (st: boolean) => {
+          if (st) {
+            currPage.value = 1
+            pageSize.value = 10
+          }
+          PROPERTY_QUERY({
+          }).then(({ data }) => {
+            targetInfoList.value = []
+            if (data.data.length === 0) {
+              proxy.$infoToast('暂无任何内容')
+              totalCount.value = 0
+              return false
+            }
+            targetInfoList.value = data.data
+            totalCount.value = data.data.length
+          })
+        }
+        // 新增或修改
+        const addOrUpdateItem = async(obj?: TargetInfoList) => {
+          isPermissionAddOrUpdateShow.value = true
+          await nextTick()
+          addOrUpdateItemRef.value.init(obj)
+        }
+
+        // 删除角色
+        const removeItems = (id: string) => {
+          proxy.$confirm('确认删除该角色, 是否继续?', '删除角色', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+            .then(() => {
+              PROPERTY_DELETE([id]).then(() => {
+                proxy.$successToast('删除成功')
+                getItemsList(true)
+              })
+            })
+            .catch(() => {
+              //
+            })
+        }
+      // 数据
+      const dataItems = async(obj?: TargetInfoList) => {
+        isPermissionDataInfoShow.value = true
+        await nextTick()
+        dataInfoRef.value.init(obj)
+
+      }
+      // 改变每页条数
+      const handleSizeChange = (val: number) => {
+        pageSize.value = val
+        // getItemsList();
+      }
+      // 跳转页数
+      const handleCurrentChange = (val: number) => {
+        currPage.value = val
+        // getItemsList();
+      }
+
+      const formatter = (row:TargetInfoList) => {
+        let propertyTypeName = ''
+        if (row.propertyType === 'P') {
+          propertyTypeName = '平铺结构'
+        } else {
+          propertyTypeName = '树结构'
+        }
+        return propertyTypeName
+      }
 
       onMounted(() => {
-        this.getItemsList(true)
-      }
-
-      // 序号
-      const indexMethod(index) {
-        return index + 1 + (Number(this.currPage) - 1) * Number(this.pageSize)
-      }
-      // 获取角色列表
-      const getItemsList(st) {
-        if (st) {
-          this.currPage = 1
-          this.pageSize = 10
-        }
-        SYSTEM_API.SYS_PERMISSION_ATTRIBUTE_QUERY_API({
-        }).then(({ data }) => {
-          this.targetInfoList = []
-          if (data.data.length === 0) {
-            this.$infoToast('暂无任何内容')
-            this.totalCount = 0
-            return false
-          }
-          this.targetInfoList = data.data
-          this.totalCount = data.data.length
-        })
-      }
-      // 新增或修改
-      const addOrUpdateItem(obj) {
-        this.isPermissionAddOrUpdateShow = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdateItem.init(obj)
-        })
-      }
-      // 删除角色
-      const removeItems(id) {
-        this.$confirm('确认删除该角色, 是否继续?', '删除角色', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            SYSTEM_API.SYS_PERMISSION_ATTRIBUTE_DELETE_API([id]).then(() => {
-              this.$successToast('删除成功')
-              this.getItemsList(true)
-            })
-          })
-          .catch(() => {
-            //
-          })
-      }
-    // 数据
-    const dataItems(item) {
-      this.isPermissionDataInfoShow = true
-      this.$nextTick(() => {
-        this.$refs.dataInfo.init(item)
+        getItemsList(true)
       })
-    }
-    // 改变每页条数
-    const handleSizeChange(val) {
-      this.pageSize = val
-      // this.getItemsList();
-    }
-    // 跳转页数
-    const handleCurrentChange(val) {
-      this.currPage = val
-      // this.getItemsList();
-    }
-
-    const formatter(row) {
-      let propertyTypeName = ''
-      if (row.propertyType === 'P') {
-        propertyTypeName = '平铺结构'
-      } else {
-        propertyTypeName = '树结构'
-      }
-      return propertyTypeName
-    }
 
       return {
-
+        indexMethod,
+        getItemsList,
+        currPage,
+        pageSize,
+        isPermissionAddOrUpdateShow,
+        isPermissionDataInfoShow,
+        addOrUpdateItemRef,
+        dataInfoRef,
+        addOrUpdateItem,
+        removeItems,
+        dataItems,
+        handleSizeChange,
+        handleCurrentChange,
+        formatter
       }
     }
 })
