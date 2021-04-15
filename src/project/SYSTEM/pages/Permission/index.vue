@@ -3,12 +3,12 @@
  * @Anthor: Telliex
  * @Date: 2021-04-14 10:31:04
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-15 18:19:43
+ * @LastEditTime: 2021-04-15 22:13:51
 -->
 <template>
     <div class="header_main">
         <mds-card title="权限属性" :name="'role'" :pack-up="false" style="margin-bottom: 0; background: #fff;">
-            <template v-slot:titleBtn>
+            <template #titleBtn>
                 <div style="float: right; height: 32px; margin-bottom: 10px;">
                     <el-button v-if="isAuth('')" type="primary" size="small" @click="getItemsList(true)">
                         查询
@@ -18,8 +18,8 @@
                     </el-button>
                 </div>
             </template>
-            <el-table ref="targetInfoList" class="newTable" header-row-class-name="tableHead" :data="targetInfoList.slice((currPage - 1) * pageSize, (currPage - 1) * pageSize + pageSize)" border tooltip-effect="dark" style="width: 100%;">
-                <el-table-column type="index" label="序号" :index="indexMethod" width="55" align="center" fixed />
+            <el-table  class="newTable" :data="targetInfoList" border tooltip-effect="dark" style="width: 100%;height: 500px;">
+                <el-table-column type="index" label="序号" :index="indexMethod" width="50" align="center" fixed />
                 <el-table-column prop="propertyName" label="属性名称" :show-overflow-tooltip="true" min-width="150" />
                 <el-table-column prop="propertyTable" label="属性所在表表名" :show-overflow-tooltip="true" width="150" />
                 <el-table-column prop="propertyType" label="属性表结构类型" :formatter="formatter" :show-overflow-tooltip="true" width="150" />
@@ -29,7 +29,7 @@
                 <el-table-column prop="privilegeIdentityName" label="属性表权限标识名称字段" :show-overflow-tooltip="true" width="180" />
                 <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true" width="150" />
                 <el-table-column label="操作" width="160" fixed="right">
-                    <template v-slot="scope">
+                    <template #default="scope">
                         <el-button v-if="isAuth('')" type="text" class="role__btn" @click="addOrUpdateItem(scope.row)">
                             修改
                         </el-button>
@@ -177,10 +177,12 @@ export default defineComponent({
       })
 
       return {
+        targetInfoList,
         indexMethod,
         getItemsList,
         currPage,
         pageSize,
+        totalCount,
         isPermissionAddOrUpdateShow,
         isPermissionDataInfoShow,
         addOrUpdateItemRef,

@@ -3,10 +3,10 @@
  * @Anthor: Telliex
  * @Date: 2021-03-16 15:22:39
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-15 20:47:05
+ * @LastEditTime: 2021-04-15 22:23:19
 -->
 <template>
-    <el-dialog :title="'权限标识 '+propertyTable" :close-on-click-modal="false" v-model:visible="isDialogShow" width="80%" @close="closeDialog">
+    <el-dialog :title="'权限标识 '+propertyTable" :close-on-click-modal="false" v-model="isDialogShow" width="80%" >
         <div class="inner-area">
             <div class="inner-area__title">
                 <el-input v-model="searchString" placeholder="请输入权限标识" style="width: 200px; margin-right: 20px;" />
@@ -20,41 +20,41 @@
             <div class="inner-area__body">
                 <div id="eagleMapContainer">
                     <div id="table-list">
-                        <el-table v-loading="loading" class="table-style-light markStyle" :data="currentDataTable" :row-class-name="rowDelFlag" header-row-class-name="tableHead" size="mini" border style="width: 100%;">
+                        <el-table v-loading="loading" class="newTable markStyle" :data="currentDataTable" :row-class-name="rowDelFlag" header-row-class-name="tableHead" size="mini" border style="width: 100%;">
                             <el-table-column width="200" :show-overflow-tooltip="true">
-                                <template v-slot:header>
+                                <template #header>
                                     <span class="notNull" />主键
                                 </template>
-                                <template v-slot="scope">
+                                <template #default="scope">
                                     <el-input v-model.trim="scope.row.propertyKey" size="small" placeholder="请输入主键" :disabled="!scope.row.isRedact" />
                                 </template>
                             </el-table-column>
                             <el-table-column min-width="200" :show-overflow-tooltip="true">
-                                <template v-slot:header>
+                                <template #header>
                                     <span class="notNull" />父节点
                                 </template>
-                                <template v-slot="scope">
+                                <template #default="scope">
                                     <el-input v-model.trim="scope.row.propertyParentKey" size="small" placeholder="请输入父节点" :disabled="!scope.row.isRedact" />
                                 </template>
                             </el-table-column>
                             <el-table-column min-width="200" :show-overflow-tooltip="true">
-                                <template v-slot:header>
+                                <template #header>
                                     <span class="notNull">* </span>权限标识
                                 </template>
-                                <template v-slot="scope">
+                                <template #default="scope">
                                     <el-input v-model.trim="scope.row.privilegeIdentity" size="small" placeholder="请输入权限标识" :disabled="!scope.row.isRedact" />
                                 </template>
                             </el-table-column>
                             <el-table-column min-width="200" :show-overflow-tooltip="true">
-                                <template v-slot:header>
+                                <template #header>
                                     <span class="notNull">* </span>权限标识描述
                                 </template>
-                                <template v-slot="scope">
+                                <template #default="scope">
                                     <el-input v-model.trim="scope.row.privilegeIdentityName" size="small" placeholder="请输入权限标识描述" :disabled="!scope.row.isRedact" />
                                 </template>
                             </el-table-column>
                             <el-table-column fixed="right" label="操作" width="100" :show-overflow-tooltip="true">
-                                <template v-slot="scope">
+                                <template #default="scope">
                                     <el-button type="text" size="mini" :disabled="scope.row.isRedact" @click="editFirstDataRow(scope.row)">
                                         修改
                                     </el-button>
@@ -177,9 +177,12 @@
                   currentDataTable.value = JSON.parse(JSON.stringify(data.data));
 
                   currentDataTable.value.forEach(item => {
-                      proxy.$set(item, 'delFlag', 0)
-                      proxy.$set(item, 'isRedact', false)
-                      proxy.$set(item, 'id', item.propertyKey)
+                      item.delFlag = 0
+                      item.isRedact = false
+                      item.id = item.propertyKey
+                      // proxy.$set(item, 'delFlag', 0)
+                      // proxy.$set(item, 'isRedact', false)
+                      // proxy.$set(item, 'id', item.propertyKey)
                       // item.delFlag = 0;
                       // item.isRedact = false;
                   })
@@ -212,7 +215,8 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    proxy.$set(row, 'delFlag', 1)
+                    // proxy.$set(row, 'delFlag', 1)
+                    row.delFlag = 1
                     // this.$successToast('删除成功');
 
                 });
@@ -225,7 +229,8 @@
                 return '';
           }
           const editFirstDataRow = (row:CurrentDataTable) => {
-              proxy.$set(row, 'isRedact', true)
+              // proxy.$set(row, 'isRedact', true)
+              row.isRedact = true
               // row.isRedact = true
           }
 
@@ -296,7 +301,10 @@
             editFirstDataRow,
             closeDialog,
             submitDataTable,
-            searchString
+            searchString,
+            loading,
+            currentDataTable,
+            propertyTable
           }
         }
 })
@@ -416,131 +424,7 @@
         background: #f5f5f5;
         border-radius: 4px;
     }
-    .card-bucket {
-        margin-bottom: 10px;
-        background: #fff;
-        border: 1px solid rgba(171, 171, 171, 0.5);
-        border-radius: 8px;
-        -webkit-box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, 0.1);
-        box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, 0.1);
-        .card-bucket__head {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
-            padding: 11px 10px;
-            font-size: 14px;
-            border-bottom: 1px #e8e8e8 solid;
 
-            .el-button {
-                font-size: 12px;
-                &::after {
-                    content: ">>";
-                }
-            }
-        }
-        .card-bucket__content {
-            display: flex;
-            padding: 6px;
-            .bucket-image {
-                display: flex;
-                flex: 2;
-                justify-content: center;
-                .pot_border {
-                    position: relative;
-                    width: 100%;
-                    height: 200px;
-                    overflow: hidden;
-                    .pot {
-                        position: absolute;
-                        top: 0;
-                        z-index: 10;
-                        width: 100%;
-                        height: 200px;
-                        // background: url(./assets/img/ferPotNew.png) no-repeat;
-                        background: url("~@/assets/img/ferPotNew.png") no-repeat;
-                        background-size: contain;
-                    }
-                    .pot_water {
-                        position: absolute;
-                        bottom: 13px;
-                        width: 114px;
-                        height: 200px;
-                        &_sole {
-                            position: absolute;
-                            bottom: 0;
-                            width: 100%;
-                            overflow: hidden;
-                            border-top: none;
-                        }
-                        &_sole::before,
-                        &_sole::after {
-                            position: absolute;
-                            bottom: 100%;
-                            left: 50%;
-                            width: 300px;
-                            height: 290px;
-                            background-color: #fff;
-                            border-radius: 55% 45%;
-                            transform: translate(-50%, -70%) rotate(0);
-                            content: "";
-                        }
-                        &_sole::after {
-                            border-radius: 55% 45%;
-                            transform: translate(70%, -50%) rotate(0);
-                            opacity: 0.3;
-                        }
-                    }
-                    &:hover {
-                        .pot_water_sole::after {
-                            animation: rotate 5s linear infinite;
-                        }
-                        .pot_water_sole::before {
-                            animation: rotate 4.5s linear infinite;
-                        }
-                    }
-
-                    @keyframes rotate {
-                        0% {
-                            transform: translate(-50%) rotateZ(0deg);
-                        }
-                        100% {
-                            transform: translate(-50%) rotateZ(360deg);
-                        }
-                    }
-                }
-            }
-            .btn-group {
-                display: flex;
-                flex: 1;
-                flex-flow: column;
-                justify-content: center;
-                .el-button {
-                    display: inline-block;
-                    -webkit-box-sizing: border-box;
-                    box-sizing: border-box;
-                    margin: 0;
-                    margin-bottom: 14px;
-                    padding: 8px 16px;
-                    font-weight: 500;
-                    font-size: 14px;
-                    line-height: 1;
-                }
-            }
-        }
-        .card-bucket__fotter {
-            padding: 10px 10px 0;
-            font-weight: 600;
-            font-size: 12px;
-
-            > div {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 6px;
-            }
-        }
-    }
 
     .dialog-footer {
         margin-top: 10px;

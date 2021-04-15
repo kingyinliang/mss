@@ -170,7 +170,7 @@ export function DOWNLOAD_FILE(params = {}):Promise<AxiosResponse> {
   return Http.get('/sysFile/download', params)
 }
 export function UPLOAD_FILE(params = {}):Promise<AxiosResponse> {
-  return Http.get('/sysFile/upload', params)
+  return Http.get('/sysFile/upload', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
 export function PROPERTY_QUERY(params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-列表
   return Http.get('/sysProperty/query', params);

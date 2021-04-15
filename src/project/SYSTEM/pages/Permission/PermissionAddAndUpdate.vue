@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="dataForm.id ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" v-model:visible="isDialogShow" @close="closeDialog">
+    <el-dialog :title="dataForm.id ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" v-model="isDialogShow">
         <el-form ref="dataFormRef" :model="dataForm" label-width="170px" :rules="checkRules">
             <el-form-item label="属性编码：" prop="propertyCode">
                 <el-input v-model="dataForm.propertyCode" placeholder="请输入" clearable />
