@@ -111,7 +111,8 @@ export default defineComponent({
           }).then(res => {
             proxy.$cookies.set('token', res.data.data.token)
             sessionStorage.setItem('userInfo', res.data.data || {})
-            window.location.href = redirectUri + `?token=${res.data.data.token}`
+            // window.location.href = redirectUri + `?token=${res.data.data.token}`
+            createProxy(redirectUri, res.data.data.token)
           })
         } else {
           proxy.$cookies.set('token', data.data.token)
@@ -120,6 +121,14 @@ export default defineComponent({
           visible.value = true
         }
       })
+    }
+    const createProxy = (redirectUri: string, token: string) => {
+      const iframe = document.createElement('iframe')
+      iframe.src = redirectUri + `?token=${token}`
+      document.getElementsByTagName('body')[0].appendChild(iframe)
+      iframe.onload = function () {
+        window.location.href = redirectUri
+      }
     }
     const clearForm = () => {
       loginForm.userName = ''
