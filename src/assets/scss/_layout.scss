@@ -13,7 +13,7 @@
 .SystemLayout{
   &__header{
     position: relative;
-    z-index: 99;
+    z-index: 2;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -119,10 +119,10 @@
       width: calc(100vw - 170px);
     }
     &--scroll{
-      padding: 15px;
-      margin-bottom: 30px;
-      height: calc(100vh - 101px);
+      padding: 15px 15px 30px 15px;
+      height: calc(100vh - 71px);
       overflow: scroll;
+      z-index: 2;
     }
     &__tabs{
       flex: 1;
@@ -154,6 +154,7 @@
     &__footer{
       position: absolute;
       bottom: 0;
+      z-index: 1;
       width: 100%;
       color: rgba(0, 0, 0, 0.45);
       font-size: 12px;
