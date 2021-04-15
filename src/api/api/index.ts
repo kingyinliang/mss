@@ -170,5 +170,5 @@ export function DOWNLOAD_FILE (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysFile/download', params)
 }
 export function UPLOAD_FILE (params = {}):Promise<AxiosResponse> {
-  return Http.get('/sysFile/upload', params)
+  return Http.get('/sysFile/upload', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
