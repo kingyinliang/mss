@@ -49,9 +49,8 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, ref } from 'vue'
-    import { PROPERTY_UPDATE, PROPERTY_DATA_INSERT } from '@/api/api'
-
+import { defineComponent, ref, reactive } from 'vue'
+import { PROPERTY_UPDATE, PROPERTY_DATA_INSERT } from '@/api/api'
 
     type TargetInfoList = {
       id:string,
@@ -66,108 +65,105 @@
       remark:string,
     }
 
-    export default defineComponent({
-        name: 'PermissionAddAndUpdate',
-        emits: ['refreshDataList'],
-        setup(props, { emit }) {
-            // const targetID = ref('')
-            const isDialogShow = ref(false)
-            const dataForm = ref({
-                      id: '',
-                      propertyCode: '',
-                      propertyName: '',
-                      propertyTable: '',
-                      propertyType: '',
-                      propertyKey: '',
-                      propertyParentKey: '',
-                      privilegeIdentity: '',
-                      privilegeIdentityName: '',
-                      remark: ''
-                    })
-            const dataFormRef = ref()
-            const checkRules = {
-                    propertyCode: [
-                        { required: true, message: '请输入属性编码', trigger: 'blur' }
-                    ],
-                    propertyName: [
-                        { required: true, message: '请输入属性名称', trigger: 'blur' }
-                    ],
-                    propertyTable: [
-                        { required: true, message: '请输入属性所在表名', trigger: 'blur' }
-                    ],
-                    propertyType: [
-                        { required: true, message: '请输入属性表结构类型', trigger: 'blur' }
-                    ],
-                    propertyKey: [
-                        { required: true, message: '请输入属性表主键字段', trigger: 'blur' }
-                    ],
-                    propertyParentKey: [
-                        { required: true, message: '请输入属性表父节点字段', trigger: 'blur' }
-                    ],
-                    privilegeIdentity: [
-                        { required: true, message: '请输入属性表权限标识字段', trigger: 'blur' }
-                    ],
-                    privilegeIdentityName: [
-                        { required: true, message: '请输入属性表权限标识名称', trigger: 'blur' }
-                    ]
-                }
+export default defineComponent({
+  name: 'PermissionAddAndUpdate',
+  emits: ['refreshDataList'],
+  setup (props, { emit }) {
+    // const targetID = ref('')
+    const isDialogShow = ref(false)
+    let dataForm = reactive({
+      id: '',
+      propertyCode: '',
+      propertyName: '',
+      propertyTable: '',
+      propertyType: '',
+      propertyKey: '',
+      propertyParentKey: '',
+      privilegeIdentity: '',
+      privilegeIdentityName: '',
+      remark: ''
+    })
+    const dataFormRef = ref()
+    const checkRules = {
+      propertyCode: [
+        { required: true, message: '请输入属性编码', trigger: 'blur' }
+      ],
+      propertyName: [
+        { required: true, message: '请输入属性名称', trigger: 'blur' }
+      ],
+      propertyTable: [
+        { required: true, message: '请输入属性所在表名', trigger: 'blur' }
+      ],
+      propertyType: [
+        { required: true, message: '请输入属性表结构类型', trigger: 'blur' }
+      ],
+      propertyKey: [
+        { required: true, message: '请输入属性表主键字段', trigger: 'blur' }
+      ],
+      propertyParentKey: [
+        { required: true, message: '请输入属性表父节点字段', trigger: 'blur' }
+      ],
+      privilegeIdentity: [
+        { required: true, message: '请输入属性表权限标识字段', trigger: 'blur' }
+      ],
+      privilegeIdentityName: [
+        { required: true, message: '请输入属性表权限标识名称', trigger: 'blur' }
+      ]
+    }
 
-            const init = (obj:TargetInfoList) => {
-                if (obj) {
-                    // targetID.value = obj.id;
-                    dataForm.value = JSON.parse(JSON.stringify(obj))
-                } else {
-                    // targetID.value = '';
-                    dataForm.value = {
-                      id: '',
-                      propertyCode: '',
-                      propertyName: '',
-                      propertyTable: '',
-                      propertyType: '',
-                      propertyKey: '',
-                      propertyParentKey: '',
-                      privilegeIdentity: '',
-                      privilegeIdentityName: '',
-                      remark: ''
-                    };
-                }
-                isDialogShow.value = true;
-            }
-
-
-            const submitDataForm = () => {
-                dataFormRef.value.validate((valid:boolean) => {
-                    if (valid) {
-                      const http = dataForm.value.id !== '' ? PROPERTY_UPDATE : PROPERTY_DATA_INSERT
-                      http(dataForm.value).then(() => {
-                        emit('refreshDataList')
-                        isDialogShow.value = false
-                      })
-                    }
-                });
-            }
-
-            // 重置
-            const closeDialog = () => {
-                // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
-                dataFormRef.value.resetFields();
-                isDialogShow.value = false
-            }
-
-
-            return {
-              init,
-              dataFormRef,
-              closeDialog,
-              isDialogShow,
-              submitDataForm,
-              checkRules,
-              dataForm
-            }
+    const init = (obj:TargetInfoList) => {
+      if (obj) {
+        // targetID.value = obj.id;
+        dataForm = JSON.parse(JSON.stringify(obj))
+      } else {
+        // targetID.value = '';
+        dataForm = {
+          id: '',
+          propertyCode: '',
+          propertyName: '',
+          propertyTable: '',
+          propertyType: '',
+          propertyKey: '',
+          propertyParentKey: '',
+          privilegeIdentity: '',
+          privilegeIdentityName: '',
+          remark: ''
         }
+      }
+      isDialogShow.value = true
+    }
 
+    const submitDataForm = () => {
+      dataFormRef.value.validate((valid:boolean) => {
+        if (valid) {
+          const http = dataForm.id !== '' ? PROPERTY_UPDATE : PROPERTY_DATA_INSERT
+          http(dataForm).then(() => {
+            emit('refreshDataList')
+            isDialogShow.value = false
+          })
+        }
+      })
+    }
 
-    });
+    // 重置
+    const closeDialog = () => {
+      // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
+      dataFormRef.value.resetFields()
+      isDialogShow.value = false
+    }
+
+    return {
+      init,
+      dataFormRef,
+      closeDialog,
+      isDialogShow,
+      submitDataForm,
+      checkRules,
+      dataForm
+    }
+  }
+
+})
 </script>
 
 <style scoped></style>
