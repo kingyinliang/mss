@@ -120,8 +120,9 @@ export default function (): LayoutTs<any> {
   const removeTabHandle = async (tabName: string, add = false) => {
     mainTabs.value = mainTabs.value.filter(item => item.name !== tabName)
     if (add) {
-      await nextTick()
-      router.push({ name: tabName })
+      router.push('/').then(() => {
+        router.push({ name: tabName })
+      })
     } else if (mainTabs.value.length >= 1) {
       // 当前选中tab被删除
       if (tabName === mainTabsActiveName.value) {
@@ -129,8 +130,8 @@ export default function (): LayoutTs<any> {
         router.push({ name: mainTabs.value[mainTabs.value.length - 1].name })
       }
     } else {
-      menuActiveName.value = ''
-      router.push({ name: 'home' })
+      menuActiveName.value = 'home'
+      router.push('/home')
     }
   }
 
@@ -152,8 +153,12 @@ export default function (): LayoutTs<any> {
   }
 
   // tabs, 刷新当前
-  const tabsRefreshCurrentHandle = () => {
+  const tabsRefreshCurrentHandle = async () => {
     const tempTabName = mainTabsActiveName.value
+    // const tempTab = mainTabs.value.find(item => item.name === tempTabName)
+    // mainTabs.value = mainTabs.value.filter(item => item.name !== tempTabName)
+    // await nextTick()
+    // mainTabs.value.push(tempTab as MainTabs)
     removeTabHandle(tempTabName, true)
   }
 

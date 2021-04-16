@@ -1,5 +1,5 @@
 <template>
-<div class="login_bg">22</div>
+<div class="login_bg" />
 </template>
 
 <script lang="ts">
