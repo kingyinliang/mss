@@ -7,6 +7,9 @@
       <el-form-item label="租户编码：" prop="systemCode">
         <el-input v-model="dataForm.systemCode" :placeholder="'租户编码'" />
       </el-form-item>
+      <el-form-item label="redirectUri：">
+        <el-input v-model="dataForm.redirectUri" :placeholder="'redirectUri'" />
+      </el-form-item>
       <el-form-item label="背景图：">
         <div v-if="bgImg" class="org-img-upload el-upload-list el-upload-list--picture-card">
           <div class="el-upload-list__item is-success avatar">
@@ -64,8 +67,13 @@ import axios from 'axios'
 
 type System = {
   id: string
+  systemName?: string
+  systemCode?: string
+  redirectUri?: string
   backgroundImg?: string
+  backgroundImgUrl?: string
   logoImg?: string
+  logoImgUrl?: string
 }
 export default defineComponent({
   name: 'SystemAddOrUpdate',
@@ -99,8 +107,19 @@ export default defineComponent({
     const init = (row:System) => {
       if (row) {
         dataForm.value = JSON.parse(JSON.stringify(row))
+        bgImg.value = dataForm.value.backgroundImgUrl || ''
+        logoImg.value = dataForm.value.logoImgUrl || ''
       } else {
-        dataForm.value = { id: '' }
+        bgImg.value = ''
+        logoImg.value = ''
+        dataForm.value = {
+          id: '',
+          systemName: '',
+          systemCode: '',
+          backgroundImg: '',
+          logoImg: '',
+          redirectUri: ''
+        }
       }
       dialogFormVisible.value = true
     }
@@ -122,18 +141,20 @@ export default defineComponent({
         FILE_API.value = data.data.url
         axios.put(data.data.url, options.file).then(res => {
           if (res.status === 200) {
-            options.onSuccess(data.data.key, options, str)
+            options.onSuccess({
+              key: data.data.key, str
+            })
           }
         })
       })
     }
     // eslint-disable-next-line
-    const addFile = (key: string, options: any, str: string) => {
-      if (str === 'bg') {
-        dataForm.value.backgroundImg = key
+    const addFile = (response: any, options: any) => {
+      if (response.str === 'bg') {
+        dataForm.value.backgroundImg = response.key
         bgImg.value = URL.createObjectURL(options.raw)
       } else {
-        dataForm.value.logoImg = key
+        dataForm.value.logoImg = response.key
         logoImg.value = URL.createObjectURL(options.raw)
       }
     }

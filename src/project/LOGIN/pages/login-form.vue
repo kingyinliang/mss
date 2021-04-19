@@ -68,7 +68,8 @@ export default defineComponent({
     const system = ref([])
     const loginForm = reactive({
       userName: '',
-      password: ''
+      password: '',
+      terminal: 'PC'
     })
 
     const init = () => {

@@ -4,11 +4,10 @@
       <div
         v-for="item in system"
         :key="item.id"
-        :style='"background-image: url(" + item.backgroundImgUrl + ")"'
         class="select_system_item"
         @click="goSystem(item)"
       >
-        <div class="select_system_item_img">
+        <div class="select_system_item_img" :style='"background-image: url(" + item.backgroundImgUrl + ")"'>
           <img :src="item.logoImgUrl" alt="">
         </div>
         <p>{{ item.systemName }}</p>

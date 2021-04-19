@@ -2,14 +2,14 @@ const path = require('path')
 
 const pages = {
   index: {
-    title: '欣和-MDS综合管理平台',
+    title: '欣和-MSS综合管理平台',
     entry: 'src/project/LOGIN/main.ts',
     template: 'public/index.html',
     filename: 'index.html',
     chunk: ['chunk-vendors', 'chunk-common', 'index']
   },
   SYSTEM: {
-    title: '欣和-制造管理系统',
+    title: '欣和-MSS综合管理平台',
     entry: 'src/project/SYSTEM/main.ts',
     template: 'public/index.html',
     filename: 'SYSTEM.html',

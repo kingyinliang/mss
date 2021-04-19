@@ -172,3 +172,21 @@ export function DOWNLOAD_FILE (params = {}):Promise<AxiosResponse> {
 export function UPLOAD_FILE (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysFile/upload', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
+export function PROPERTY_QUERY (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-列表
+  return Http.get('/sysProperty/query', params)
+}
+export function PROPERTY_DELETE (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-批量删除
+  return Http.post('/sysProperty/delete', params)
+}
+export function PROPERTY_UPDATE (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-修改
+  return Http.post('/sysProperty/update', params)
+}
+export function PROPERTY_SAVE (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性对应表数据-保存
+  return Http.post('/sysProperty/data/save', params)
+}
+export function PROPERTY_DATA_QUERY (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性对应表数据-列表
+  return Http.get('/sysProperty/data/query', params)
+}
+export function PROPERTY_DATA_INSERT (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-新增
+  return Http.post('/sysProperty/insert', params)
+}
