@@ -3,7 +3,7 @@
  * @Anthor: Telliex
  * @Date: 2021-03-16 15:22:39
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-15 22:23:19
+ * @LastEditTime: 2021-04-16 18:28:23
 -->
 <template>
     <el-dialog :title="'权限标识 '+propertyTable" :close-on-click-modal="false" v-model="isDialogShow" width="80%" >
@@ -82,12 +82,11 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance } from 'vue'
-    import { PROPERTY_DATA_QUERY, PROPERTY_SAVE } from '@/api/api'
-    import _ from 'lodash'
+import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, reactive } from 'vue'
+import { PROPERTY_DATA_QUERY, PROPERTY_SAVE } from '@/api/api'
+import _ from 'lodash'
 
-
-    type TargetInfoList = {
+    interface TargetInfoList {
       propertyName:string,
       propertyTable:string,
       propertyType:string,
@@ -117,7 +116,6 @@
         isRedact: boolean
     }
 
-
     interface SaveList{
       privilegeIdentity:string;
       privilegeIdentityName:string;
@@ -131,182 +129,176 @@
       saveList:SaveList[];
     }
 
-    export default defineComponent({
-        name: 'RoleaddAndUpdate',
-        emits: ['refreshDataList'],
-        setup(props, { emit }) {
-          const ctx = getCurrentInstance() as ComponentInternalInstance
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const proxy = ctx.proxy as any
-          const searchString = ref('')
-          const propertyTable = ref('')
-          const isDialogShow = ref(false)
-          const currentDataTable = ref([] as CurrentDataTable[])
-          const currentDataTableOrg = ref([])
-          // const currentDataTableC = ref([])
-          // const ruleForm = ref({})
-          // const listPage = ref(0)
-          // const list = ref(0)
-          const loading = ref(true)
+export default defineComponent({
+  name: 'RoleaddAndUpdate',
+  emits: ['refreshDataList'],
+  setup (props, { emit }) {
+    const ctx = getCurrentInstance() as ComponentInternalInstance
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const proxy = ctx.proxy as any
+    const searchString = ref('')
+    const propertyTable = ref('')
+    const isDialogShow = ref(false)
+    let currentDataTable = reactive<CurrentDataTable[]>([])
+    let currentDataTableOrg = reactive<CurrentDataTable[]>([])
+    // const currentDataTableC = ref([])
+    // const ruleForm = ref({})
+    // const listPage = ref(0)
+    // const list = ref(0)
+    const loading = ref(true)
 
-          const init = (obj:TargetInfoList) => {
-            console.log(obj)
-            loading.value = true;
-            propertyTable.value = obj.propertyTable ? obj.propertyTable : '';
-            queryItems('');
-            isDialogShow.value = true;
+    const init = (obj:TargetInfoList) => {
+      console.log(obj)
+      loading.value = true
+      propertyTable.value = obj.propertyTable ? obj.propertyTable : ''
+      queryItems('')
+      isDialogShow.value = true
+    }
 
+    // 编辑
+    const queryItems = (str:string) => {
+      PROPERTY_DATA_QUERY({
+        propertyTableName: propertyTable.value,
+        privilegeIdentity: str
+      }).then(({ data }) => {
+        setTimeout(() => {
+          loading.value = false
+        }, 3000)
+        currentDataTable = []
+        currentDataTableOrg = []
+        if (data.data.length === 0) {
+          proxy.$infoToast('暂无任何内容')
+          // totalCount = 0;
+          return false
+        }
+        currentDataTable = JSON.parse(JSON.stringify(data.data))
+
+        currentDataTable.forEach(item => {
+          item.delFlag = 0
+          item.isRedact = false
+          item.id = item.propertyKey
+          // proxy.$set(item, 'delFlag', 0)
+          // proxy.$set(item, 'isRedact', false)
+          // proxy.$set(item, 'id', item.propertyKey)
+          // item.delFlag = 0;
+          // item.isRedact = false;
+        })
+        currentDataTableOrg = JSON.parse(JSON.stringify(currentDataTable))
+      })
+    }
+
+    const addNewDataRow = () => {
+      currentDataTable.unshift({
+        propertyKey: '',
+        propertyParentKey: '',
+        privilegeIdentity: '',
+        privilegeIdentityName: '',
+        propertyCode: '',
+        propertyName: '',
+        propertyType: '',
+        propertyTable: '',
+        delFlag: 0,
+        isRedact: true,
+        remark: ''
+      })
+    }
+
+    // 删除
+    const removeFirstDataRow = (row:CurrentDataTable) => {
+      proxy.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // proxy.$set(row, 'delFlag', 1)
+        row.delFlag = 1
+        // this.$successToast('删除成功');
+      })
+    }
+
+    const rowDelFlag = (row:CurrentDataTable) => {
+      if (row.delFlag === 1) {
+        return 'rowDel'
+      }
+      return ''
+    }
+    const editFirstDataRow = (row:CurrentDataTable) => {
+      // proxy.$set(row, 'isRedact', true)
+      row.isRedact = true
+      // row.isRedact = true
+    }
+
+    // 重置
+    const closeDialog = () => {
+      // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
+      // this.$refs.currentDataTable.resetFields();
+      currentDataTable = []
+      currentDataTableOrg = []
+      isDialogShow.value = false
+    }
+
+    const submitDataTable = () => {
+      const dataArr = currentDataTable.filter(it => it.delFlag !== 1 && it.isRedact === true)
+      for (let i = 0; i < dataArr.length; i++) {
+        if (!dataArr[i].privilegeIdentity || !dataArr[i].privilegeIdentityName) {
+          proxy.$warningToast('请填写必填项')
+          return false
+        }
+      }
+
+      const dataTemp:SaveCom = {
+        deleteList: [], //
+        propertyTable: propertyTable.value, //
+        saveList: [] //
+      }
+
+      const indexTemp = currentDataTable.filter(subItem => !subItem.id) ? currentDataTable.filter(subItem => !subItem.id).length : 0
+
+      currentDataTable.forEach((item, index) => {
+        if (item.delFlag === 1) {
+          if (item.id) {
+            dataTemp.deleteList.push(item.propertyKey)
           }
-
-          // 编辑
-          const queryItems = (str:string) => {
-              PROPERTY_DATA_QUERY({
-                  propertyTableName: propertyTable.value,
-                  privilegeIdentity: str
-              }).then(({ data }) => {
-                  setTimeout(() => {
-                      loading.value = false;
-                  }, 3000);
-                  currentDataTable.value = [];
-                  currentDataTableOrg.value = [];
-                  if (data.data.length === 0) {
-                      proxy.$infoToast('暂无任何内容');
-                      // totalCount = 0;
-                      return false;
-                  }
-                  currentDataTable.value = JSON.parse(JSON.stringify(data.data));
-
-                  currentDataTable.value.forEach(item => {
-                      item.delFlag = 0
-                      item.isRedact = false
-                      item.id = item.propertyKey
-                      // proxy.$set(item, 'delFlag', 0)
-                      // proxy.$set(item, 'isRedact', false)
-                      // proxy.$set(item, 'id', item.propertyKey)
-                      // item.delFlag = 0;
-                      // item.isRedact = false;
-                  })
-                  currentDataTableOrg.value = JSON.parse(JSON.stringify(currentDataTable.value));
-
-              })
-          }
-
-          const addNewDataRow = () => {
-              currentDataTable.value.unshift({
-                  propertyKey: '',
-                  propertyParentKey: '',
-                  privilegeIdentity: '',
-                  privilegeIdentityName: '',
-                  propertyCode: '',
-                  propertyName: '',
-                  propertyType: '',
-                  propertyTable: '',
-                  delFlag: 0,
-                  isRedact: true,
-                  remark: ''
-              })
-          }
-
-
-          // 删除
-          const removeFirstDataRow = (row:CurrentDataTable) => {
-                proxy.$confirm('是否删除?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    // proxy.$set(row, 'delFlag', 1)
-                    row.delFlag = 1
-                    // this.$successToast('删除成功');
-
-                });
-          }
-
-          const rowDelFlag = (row:CurrentDataTable) => {
-                if (row.delFlag === 1) {
-                    return 'rowDel';
-                }
-                return '';
-          }
-          const editFirstDataRow = (row:CurrentDataTable) => {
-              // proxy.$set(row, 'isRedact', true)
-              row.isRedact = true
-              // row.isRedact = true
-          }
-
-          // 重置
-          const closeDialog = () => {
-              // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
-              // this.$refs.currentDataTable.resetFields();
-              currentDataTable.value = [];
-              currentDataTableOrg.value = [];
-              isDialogShow.value = false
-          }
-
-
-          const submitDataTable = () => {
-                const dataArr = currentDataTable.value.filter(it => it.delFlag !== 1 && it.isRedact === true)
-                for (let i = 0; i < dataArr.length; i++) {
-                    if (!dataArr[i].privilegeIdentity || !dataArr[i].privilegeIdentityName) {
-                        proxy.$warningToast('请填写必填项');
-                        return false
-                    }
-                }
-
-                const dataTemp:SaveCom = {
-                  deleteList: [], //
-                  propertyTable: propertyTable.value, //
-                  saveList: [] //
-                };
-
-                const indexTemp = currentDataTable.value.filter(subItem => !subItem.id) ? currentDataTable.value.filter(subItem => !subItem.id).length : 0;
-
-                currentDataTable.value.forEach((item, index) => {
-                    if (item.delFlag === 1) {
-                        if (item.id) {
-                            dataTemp.deleteList.push(item.propertyKey)
-                        }
-                    } else if (item.isRedact) {
-                        if (item.id) {
-                            const itemTemp = JSON.parse(JSON.stringify(item));
-                            delete itemTemp.isRedact
-                            const currentData = JSON.parse(JSON.stringify(currentDataTableOrg.value[index - indexTemp]));
-                            delete currentData.isRedact
-                            if (!_.isEqual(currentData, itemTemp)) {
-                                dataTemp.saveList.push(item)
-                            }
-                        } else {
-                            dataTemp.saveList.push(item)
-                        }
-                    }
-                })
-
-                PROPERTY_SAVE(
-                    dataTemp
-                ).then(() => {
-                    emit('refreshDataList')
-                    proxy.$successToast('保存成功');
-                    isDialogShow.value = false;
-                })
-
+        } else if (item.isRedact) {
+          if (item.id) {
+            const itemTemp = JSON.parse(JSON.stringify(item))
+            delete itemTemp.isRedact
+            const currentData = JSON.parse(JSON.stringify(currentDataTableOrg[index - indexTemp]))
+            delete currentData.isRedact
+            if (!_.isEqual(currentData, itemTemp)) {
+              dataTemp.saveList.push(item)
             }
-
-          return {
-            init,
-            queryItems,
-            isDialogShow,
-            addNewDataRow,
-            removeFirstDataRow,
-            rowDelFlag,
-            editFirstDataRow,
-            closeDialog,
-            submitDataTable,
-            searchString,
-            loading,
-            currentDataTable,
-            propertyTable
+          } else {
+            dataTemp.saveList.push(item)
           }
         }
+      })
+
+      PROPERTY_SAVE(
+        dataTemp
+      ).then(() => {
+        emit('refreshDataList')
+        proxy.$successToast('保存成功')
+        isDialogShow.value = false
+      })
+    }
+
+    return {
+      init,
+      queryItems,
+      isDialogShow,
+      addNewDataRow,
+      removeFirstDataRow,
+      rowDelFlag,
+      editFirstDataRow,
+      closeDialog,
+      submitDataTable,
+      searchString,
+      loading,
+      currentDataTable,
+      propertyTable
+    }
+  }
 })
 </script>
 
@@ -425,11 +417,9 @@
         border-radius: 4px;
     }
 
-
     .dialog-footer {
         margin-top: 10px;
         text-align: right;
     }
-
 
 </style>
