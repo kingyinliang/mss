@@ -8,21 +8,21 @@
     <el-table :data="tableArr" border tooltip-effect="dark" style="width: 100%;">
       <el-table-column type="index" label="序号" width="50" align="center" fixed />
       <el-table-column prop="systemCode" label="租户编码" :show-overflow-tooltip="true" min-width="80" />
-      <el-table-column prop="systemName" label="租户名称" :show-overflow-tooltip="true" min-width="150" />
-      <el-table-column prop="clientId" label="clientId" :show-overflow-tooltip="true" min-width="160" />
-      <el-table-column prop="clientSecret" label="clientSecret" :show-overflow-tooltip="true" min-width="160" />
-      <el-table-column prop="backgroundImg" label="背景图片" :show-overflow-tooltip="true" min-width="180" >
+      <el-table-column prop="systemName" label="租户名称" :show-overflow-tooltip="true" min-width="120" />
+      <el-table-column prop="clientId" label="clientId" :show-overflow-tooltip="true" min-width="280" />
+      <el-table-column prop="clientSecret" label="clientSecret" :show-overflow-tooltip="true" min-width="280" />
+      <el-table-column prop="backgroundImg" label="背景图片" :show-overflow-tooltip="true" min-width="110" >
         <template #default="scope">
           <img :src="scope.row.backgroundImgUrl" alt="" class="img">
         </template>
       </el-table-column>
-      <el-table-column prop="logoImg" label="logo" :show-overflow-tooltip="true" min-width="180" >
+      <el-table-column prop="logoImg" label="logo" :show-overflow-tooltip="true" min-width="110" >
         <template #default="scope">
           <img :src="scope.row.logoImgUrl" alt="" class="img">
         </template>
       </el-table-column>
-      <el-table-column prop="oneMoreFlag" label="多工厂标识" :show-overflow-tooltip="true" min-width="120" />
-      <el-table-column label="操作" min-width="120" fixed="right">
+      <el-table-column prop="oneMoreFlag" label="多工厂标识" :show-overflow-tooltip="true" min-width="100" />
+      <el-table-column label="操作" min-width="100" fixed="right">
         <template #default="scope">
           <el-button v-if="isAuth('roleDeptCfg')" type="text" class="role__btn" @click="addOrUpdate(scope.row)">
             修改
