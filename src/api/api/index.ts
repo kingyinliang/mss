@@ -190,3 +190,15 @@ export function PROPERTY_DATA_QUERY (params = {}): Promise<AxiosResponse> { // �
 export function PROPERTY_DATA_INSERT (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-新增
   return Http.post('/sysProperty/insert', params)
 }
+
+export function SYS_PERMISSION_ATTRIBUTE_ASSIGNMENT_QUERY (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性分配-列表
+  return Http.get('/sysProperty/privilegeList/query', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+
+export function SYS_PERMISSION_ATTRIBUTE_ROLE_ASSIGNMENT_QUERY_BY_ID (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-查询角色分配的属性节点(选中的末端节点)
+  return Http.get('/sysRoleProperty/queryByRoleId', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+
+export function SYS_PERMISSION_ATTRIBUTE_SAVE (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-分配保存
+  return Http.post('/sysRoleProperty/save', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
