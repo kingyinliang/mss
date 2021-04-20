@@ -45,6 +45,7 @@
 import SelectSystem from '@/components/layout/select-system.vue'
 import { defineComponent, ref, reactive, onMounted, getCurrentInstance, ComponentPublicInstance, ComponentInternalInstance } from 'vue'
 import { LOGIN, GET_LOGIN_INFO, GET_TOKEN, UPDATE_TENANT } from '@/api/api'
+import { ElLoading } from 'element-plus'
 
 interface QueryObj {
   url?: string;
@@ -74,7 +75,6 @@ export default defineComponent({
 
     const init = () => {
       const query:QueryObj = proxy.$route.query
-
       if (query.token) {
         proxy.$cookies.set('token', query.token)
         GET_LOGIN_INFO({
@@ -124,10 +124,17 @@ export default defineComponent({
     }
     const createProxy = (redirectUri: string, token: string) => {
       console.time('iframe')
+      const _loading = ElLoading.service({
+        lock: true,
+        spinner: 'loadingGif',
+        text: '加载中……',
+        background: 'rgba(255, 255, 255, 0.7)'
+      })
       const iframe = document.createElement('iframe')
       iframe.src = redirectUri + `?token=${token}`
       document.getElementsByTagName('body')[0].appendChild(iframe)
       iframe.onload = function () {
+        _loading.close()
         console.timeEnd('iframe')
         window.location.href = redirectUri
       }
