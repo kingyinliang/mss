@@ -29,9 +29,12 @@ const router = createRouter({
 let isAddDynamicMenuRoutes = false
 
 router.beforeEach((to, from, next) => {
+  console.log('beforeEach')
   if (isAddDynamicMenuRoutes) {
+    console.log('true')
     return next()
   } else {
+    console.log('false')
     GET_NAV({
       factory: 'mss_fake_factory',
       tenant: 'MSS'

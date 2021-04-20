@@ -112,7 +112,6 @@ export default defineComponent({
           }).then(res => {
             proxy.$cookies.set('token', res.data.data.token)
             sessionStorage.setItem('userInfo', res.data.data || {})
-            // window.location.href = redirectUri + `?token=${res.data.data.token}`
             createProxy(redirectUri, res.data.data.token)
           })
         } else {
@@ -124,10 +123,12 @@ export default defineComponent({
       })
     }
     const createProxy = (redirectUri: string, token: string) => {
+      console.time('iframe')
       const iframe = document.createElement('iframe')
       iframe.src = redirectUri + `?token=${token}`
       document.getElementsByTagName('body')[0].appendChild(iframe)
       iframe.onload = function () {
+        console.timeEnd('iframe')
         window.location.href = redirectUri
       }
     }
