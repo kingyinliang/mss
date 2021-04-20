@@ -116,3 +116,46 @@ export function treeDataTranslate (data: MenuBbj[]):MenuBbj[] {
   }
   return res
 }
+
+export interface MenuBbjV2 {
+  id: string;
+  _level: number;
+  parentId: string;
+  privilegeCode: string;
+  privilegeIdentity: string;
+  privilegeIdentityName: string;
+  privilegeName: string;
+  children: MenuBbjV2[]
+}
+interface TempV2 {
+  [key:string]: MenuBbjV2
+}
+
+export function treeDataTranslateOfNormal (data:MenuBbjV2[]) :MenuBbjV2[] {
+  const res: MenuBbjV2[] = []
+  const temp:TempV2 = {}
+  for (let i = 0; i < data.length; i++) {
+    temp[data[i].id] = data[i]
+  }
+  for (let k = 0; k < data.length; k++) {
+    if (temp[data[k].parentId] && data[k].id !== data[k].parentId) {
+      if (!temp[data[k].parentId].children) {
+        temp[data[k].parentId].children = []
+      }
+      if (!temp[data[k].parentId]._level) {
+        temp[data[k].parentId]._level = 1
+      }
+      data[k]._level = temp[data[k].parentId]._level + 1
+      temp[data[k].parentId].children.push(data[k])
+      // temp[data[k].parentId].children.sort((a:MenuBbjV2, b:MenuBbjV2) => {
+      //   return a.id - b.id
+      // })
+    } else {
+      res.push(data[k])
+      // res.sort((a, b) => {
+      //   return a.id - b.id
+      // })
+    }
+  }
+  return res
+}

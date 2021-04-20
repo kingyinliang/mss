@@ -3,7 +3,7 @@
  * @Anthor: Telliex
  * @Date: 2021-03-16 15:22:39
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-16 18:28:23
+ * @LastEditTime: 2021-04-19 16:51:55
 -->
 <template>
     <el-dialog :title="'权限标识 '+propertyTable" :close-on-click-modal="false" v-model="isDialogShow" width="80%" >
@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, reactive } from 'vue'
+import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { PROPERTY_DATA_QUERY, PROPERTY_SAVE } from '@/api/api'
 import _ from 'lodash'
 
@@ -139,8 +139,8 @@ export default defineComponent({
     const searchString = ref('')
     const propertyTable = ref('')
     const isDialogShow = ref(false)
-    let currentDataTable = reactive<CurrentDataTable[]>([])
-    let currentDataTableOrg = reactive<CurrentDataTable[]>([])
+    const currentDataTable = ref<CurrentDataTable[]>([])
+    const currentDataTableOrg = ref<CurrentDataTable[]>([])
     // const currentDataTableC = ref([])
     // const ruleForm = ref({})
     // const listPage = ref(0)
@@ -151,6 +151,8 @@ export default defineComponent({
       console.log(obj)
       loading.value = true
       propertyTable.value = obj.propertyTable ? obj.propertyTable : ''
+      currentDataTable.value = []
+      currentDataTableOrg.value = []
       queryItems('')
       isDialogShow.value = true
     }
@@ -164,16 +166,15 @@ export default defineComponent({
         setTimeout(() => {
           loading.value = false
         }, 3000)
-        currentDataTable = []
-        currentDataTableOrg = []
+
         if (data.data.length === 0) {
           proxy.$infoToast('暂无任何内容')
           // totalCount = 0;
           return false
         }
-        currentDataTable = JSON.parse(JSON.stringify(data.data))
+        currentDataTable.value = JSON.parse(JSON.stringify(data.data))
 
-        currentDataTable.forEach(item => {
+        currentDataTable.value.forEach(item => {
           item.delFlag = 0
           item.isRedact = false
           item.id = item.propertyKey
@@ -183,12 +184,12 @@ export default defineComponent({
           // item.delFlag = 0;
           // item.isRedact = false;
         })
-        currentDataTableOrg = JSON.parse(JSON.stringify(currentDataTable))
+        currentDataTableOrg.value = JSON.parse(JSON.stringify(currentDataTable.value))
       })
     }
 
     const addNewDataRow = () => {
-      currentDataTable.unshift({
+      currentDataTable.value.unshift({
         propertyKey: '',
         propertyParentKey: '',
         privilegeIdentity: '',
@@ -232,13 +233,13 @@ export default defineComponent({
     const closeDialog = () => {
       // document.querySelectorAll('.j_closeBtn')[0].focus(); // bug 优化
       // this.$refs.currentDataTable.resetFields();
-      currentDataTable = []
-      currentDataTableOrg = []
+      currentDataTable.value = []
+      currentDataTableOrg.value = []
       isDialogShow.value = false
     }
 
     const submitDataTable = () => {
-      const dataArr = currentDataTable.filter(it => it.delFlag !== 1 && it.isRedact === true)
+      const dataArr = currentDataTable.value.filter(it => it.delFlag !== 1 && it.isRedact === true)
       for (let i = 0; i < dataArr.length; i++) {
         if (!dataArr[i].privilegeIdentity || !dataArr[i].privilegeIdentityName) {
           proxy.$warningToast('请填写必填项')
@@ -252,9 +253,9 @@ export default defineComponent({
         saveList: [] //
       }
 
-      const indexTemp = currentDataTable.filter(subItem => !subItem.id) ? currentDataTable.filter(subItem => !subItem.id).length : 0
+      const indexTemp = currentDataTable.value.filter(subItem => !subItem.id) ? currentDataTable.value.filter(subItem => !subItem.id).length : 0
 
-      currentDataTable.forEach((item, index) => {
+      currentDataTable.value.forEach((item, index) => {
         if (item.delFlag === 1) {
           if (item.id) {
             dataTemp.deleteList.push(item.propertyKey)
@@ -263,7 +264,7 @@ export default defineComponent({
           if (item.id) {
             const itemTemp = JSON.parse(JSON.stringify(item))
             delete itemTemp.isRedact
-            const currentData = JSON.parse(JSON.stringify(currentDataTableOrg[index - indexTemp]))
+            const currentData = JSON.parse(JSON.stringify(currentDataTableOrg.value[index - indexTemp]))
             delete currentData.isRedact
             if (!_.isEqual(currentData, itemTemp)) {
               dataTemp.saveList.push(item)

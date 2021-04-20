@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="dataForm.id ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" v-model="isDialogShow">
+    <el-dialog :title="dataForm.id!=='' ? '修改权限属性' : '新增权限属性'" :close-on-click-modal="false" v-model="isDialogShow">
         <el-form ref="dataFormRef" :model="dataForm" label-width="170px" :rules="checkRules">
             <el-form-item label="属性编码：" prop="propertyCode">
                 <el-input v-model="dataForm.propertyCode" placeholder="请输入" clearable />
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { PROPERTY_UPDATE, PROPERTY_DATA_INSERT } from '@/api/api'
 
     type TargetInfoList = {
@@ -71,7 +71,7 @@ export default defineComponent({
   setup (props, { emit }) {
     // const targetID = ref('')
     const isDialogShow = ref(false)
-    let dataForm = reactive({
+    const dataForm = ref({
       id: '',
       propertyCode: '',
       propertyName: '',
@@ -112,12 +112,16 @@ export default defineComponent({
     }
 
     const init = (obj:TargetInfoList) => {
+      console.log('ddddddd')
+      console.log(obj)
       if (obj) {
         // targetID.value = obj.id;
-        dataForm = JSON.parse(JSON.stringify(obj))
+        dataForm.value = JSON.parse(JSON.stringify(obj))
+        console.log('dataForm')
+        console.log(dataForm.value)
       } else {
         // targetID.value = '';
-        dataForm = {
+        dataForm.value = {
           id: '',
           propertyCode: '',
           propertyName: '',
@@ -136,8 +140,8 @@ export default defineComponent({
     const submitDataForm = () => {
       dataFormRef.value.validate((valid:boolean) => {
         if (valid) {
-          const http = dataForm.id !== '' ? PROPERTY_UPDATE : PROPERTY_DATA_INSERT
-          http(dataForm).then(() => {
+          const http = dataForm.value.id !== '' ? PROPERTY_UPDATE : PROPERTY_DATA_INSERT
+          http(dataForm.value).then(() => {
             emit('refreshDataList')
             isDialogShow.value = false
           })
