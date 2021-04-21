@@ -3,7 +3,7 @@
  * @Anthor: Telliex
  * @Date: 2020-07-21 13:57:11
  * @LastEditors: Telliex
- * @LastEditTime: 2021-04-20 15:50:44
+ * @LastEditTime: 2021-04-21 15:52:22
 -->
 
 <template>
@@ -23,7 +23,7 @@
                     </el-button>
                 </div>
             </template>
-            <el-table ref="targetInfoList" class="newTable" header-row-class-name="tableHead"  :data="targetInfoList" border tooltip-effect="dark" style="width: 100%;">
+            <el-table ref="targetInfoListRef" class="newTable" header-row-class-name="tableHead"  :data="targetInfoList" border tooltip-effect="dark" style="width: 100%;">
                 <el-table-column type="index" label="序号" :index="indexMethod" width="50" align="center" fixed />
                 <el-table-column prop="groupCode" label="数据集编码" :show-overflow-tooltip="true" min-width="200" />
                 <el-table-column prop="remark" label="数据集描述" :show-overflow-tooltip="true" min-width="180" />
@@ -41,15 +41,15 @@
                 </el-table-column>
                 <el-table-column label="操作" width="140" fixed="right">
                     <template #default="scope">
-                        <el-button type="text" class="role__btn" @click="editItem(scope.row)">
+                        <el-button type="text" @click="editItem(scope.row)">
                             编辑
                         </el-button>
                         |
-                        <el-button type="text" class="role__btn" @click="duplicationItem(scope.row)">
+                        <el-button type="text" @click="duplicationItem(scope.row)">
                             复制
                         </el-button>
                         |
-                        <el-button type="text" class="role__btn" @click="removeItems(scope.row)">
+                        <el-button type="text" @click="removeItems(scope.row)">
                             删除
                         </el-button>
                     </template>
@@ -139,6 +139,7 @@ export default defineComponent({
 
     // [BTN:新增] 新增数据集 item
     const addItem = async (obj:TargetInfoList) => {
+      isEditDataSetItemShow.value = true
       await nextTick()
       editDataSetItemRef.value.init(obj, '新增数据集')
     }
@@ -146,12 +147,14 @@ export default defineComponent({
     // [BTN:编辑] 编辑数据集 item
     const editItem = async (obj:TargetInfoList) => {
       console.log(obj)
+      isEditDataSetItemShow.value = true
       await nextTick()
       editDataSetItemRef.value.init(obj, '编辑数据集')
     }
 
     // [BTN:复制]:复制数据集 item
     const duplicationItem = async (obj:TargetInfoList) => {
+      isEditDataSetItemShow.value = true
       await nextTick()
       editDataSetItemRef.value.init(obj, '复制数据集')
     }

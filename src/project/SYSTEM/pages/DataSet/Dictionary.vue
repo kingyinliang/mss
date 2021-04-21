@@ -14,7 +14,7 @@
                     </el-button>
                 </div>
             </template>
-            <el-table ref="targetInfoListRef" class="newTable" header-row-class-name="tableHead"  :data="targetInfoList" border tooltip-effect="dark" style="width: 100%;">
+            <el-table class="newTable" header-row-class-name="tableHead"  :data="targetInfoList" border tooltip-effect="dark" style="width: 100%;">
                 <el-table-column type="index" label="序号" :index="indexMethod" width="50" align="center" fixed />
                 <el-table-column prop="dictionaryCode" label="属性编码" :show-overflow-tooltip="true" min-width="200">
                     <template #default="scope">
@@ -221,7 +221,7 @@ export default defineComponent({
         propertyList: [],
         created: dateFormat(new Date(), 'yyyy-MM-dd'),
         changed: dateFormat(new Date(), 'yyyy-MM-dd'),
-        changer: sessionStorage.getItem('realName') + ' ' + sessionStorage.getItem('userName'),
+        changer: JSON.parse(sessionStorage.getItem('userInfo') || '{}').realName + ' ' + JSON.parse(sessionStorage.getItem('userInfo') || '{}').userName,
         blueprint: false,
         standard: false,
         project: false,
@@ -321,6 +321,7 @@ export default defineComponent({
     }
 
     return {
+      canSave,
       indexMethod,
       controllableForm,
       ownerList,
