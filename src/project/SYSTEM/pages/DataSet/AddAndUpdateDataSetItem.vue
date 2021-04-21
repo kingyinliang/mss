@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
-        <el-dialog :title="dialogTitle" :close-on-click-modal="false" :visible="isDialogShow" @close="closeDialog">
-            <el-form ref="dataFormRef" :model="dataForm" label-width="100px" :rules="checkRules" style="max-height: 400px; overflow-y: auto;">
+        <el-dialog :title="dialogTitle" :close-on-click-modal="false" v-model="isDialogShow">
+            <el-form ref="dataFormRef" :model="dataForm" label-width="120px" :rules="checkRules" style="max-height: 400px; overflow-y: auto;">
                 <div class="form-item-group">
                     <el-form-item v-if="dialogTitle === '编辑数据集'" label="数据集编码：" prop="dataSetCode" style="margin-right: 30px;">
                         {{ dataForm.dataSetCode }}
@@ -71,7 +71,7 @@
                     </el-checkbox-group>
                 </el-form-item>
             </el-form>
-            <template #dialog-footer>
+            <template #footer>
               <div class="dialog-footer">
                   <el-button class="j_closeBtn" @click="closeDialog">
                       取消
