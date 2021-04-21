@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="数据权限" :close-on-click-modal="false" v-model="isDialogShow" class="myDialog">
+    <el-dialog title="数据权限" :close-on-click-modal="false" v-model="isDialogShow">
         <h3>角色名称-{{ roleName }}</h3>
         <div style="max-height: 53vh; overflow: auto;">
             <div v-for="(item,index) in topicList" :key="index">
@@ -9,7 +9,7 @@
                 </h4>
                 <el-tree
                     v-show="!item.hide"
-                    :ref="item.ref"
+                    :ref="setItemRef"
                     :data="item.orgTree"
                     :props="{
                         label: 'privilegeIdentityName',
@@ -19,13 +19,12 @@
                     :default-expand-all="false"
                     :render-after-expand="false"
                     show-checkbox
-                    children="list"
                     style="margin-left: 20px;"
                 />
             </div>
         </div>
         <template #footer>
-          <span  class="dialog-footer">
+          <span class="dialog-footer">
               <el-button @click="isDialogShow = false">取消</el-button>
               <el-button type="primary" @click="submitDataForm">确定</el-button>
           </span>
@@ -34,9 +33,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, nextTick } from 'vue'
-import { treeDataTranslateOfNormal, MenuBbjV2 } from '@/utils'
+import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, nextTick, onBeforeUpdate, onUpdated } from 'vue'
+import { treeDataTranslateOfNormal, TreeDataBbj } from '@/utils'
 import { SYS_PERMISSION_ATTRIBUTE_ASSIGNMENT_QUERY, SYS_PERMISSION_ATTRIBUTE_ROLE_ASSIGNMENT_QUERY_BY_ID, SYS_PERMISSION_ATTRIBUTE_SAVE } from '@/api/api'
+import { ElTree } from 'element-plus'
 
 interface DataObject{
   changed: string;
@@ -59,19 +59,14 @@ interface OrgTreeList{
   privilegeName: string;
   _level: number;
   children: [];
-
 }
 
 interface TopicList{
   topic: string;
   hide: boolean;
   ref: string;
-  orgTree: MenuBbjV2[];
+  orgTree: TreeDataBbj[];
 
-}
-
-interface Obj{
-  privilegeId:string;
 }
 
 interface DataTemp{
@@ -92,9 +87,9 @@ export default defineComponent({
     const roleName = ref('')
     const isDialogShow = ref(false)
     const topicList = ref<TopicList[]>([])
-    const refList = ref<HTMLFormElement[]>([])
-
-    const deptListTree1Ref = ref()
+    // must know ref type
+    let itemRefs:typeof ElTree[] = []
+    // const deptListTree1Ref = ref()
     // const deptListTree2Ref = ref()
 
     // 获取组织结构树
@@ -115,54 +110,50 @@ export default defineComponent({
           topicList.value.push({
             topic: item.propertyName,
             orgTree: treeDataTranslateOfNormal(item.list),
-            // orgTree: item.list,
             hide: true,
             ref: `deptListTree${index + 1}Ref`
           })
-          refList.value.push(deptListTree1Ref.value)
         })
-        console.log('refList')
-        console.log(refList)
+        console.log('topicList')
+        console.log(topicList.value)
         isDialogShow.value = true
       }).then(() => {
         SYS_PERMISSION_ATTRIBUTE_ROLE_ASSIGNMENT_QUERY_BY_ID({
           roleId: roleID.value
         }).then(({ data: res }) => {
           nextTick(() => {
-            console.log('res4444444444444')
-            console.log(res)
             for (let i = 1; i <= topicList.value.length; i++) {
-              // refList.value[0].setCheckedKeys(res.data)
-              // [refList[i].value[0].setCheckedKeys(res.data)
-              deptListTree1Ref.value.setCheckedKeys(res.data)
-              // deptListTree2Ref.value.setCheckedKeys(res.data)
+              itemRefs[i - 1].setCheckedKeys(res.data)
             }
-
-            // deptListTree1Ref.value.setCheckedKeys(res.data)
           })
         })
       })
     }
 
+    onBeforeUpdate(() => {
+      itemRefs = []
+    })
+
+    onUpdated(() => {
+      console.log('ref update')
+      console.log(itemRefs)
+    })
+
     // 提交
     const submitDataForm = () => {
       let checkList:string[] = []
-      // for (let i = 1; i <= topicList.value.length; i++) {
-      //   checkList = checkList.concat(this.$refs[`deptListTree${i}`][0].getCheckedKeys()).concat(this.$refs[`deptListTree${i}`][0].getHalfCheckedKeys())
-      // }
-      checkList = checkList.concat(deptListTree1Ref.value.getCheckedKeys()).concat(deptListTree1Ref.value.getHalfCheckedKeys())
-
-      const listTemp: Obj[] = []
+      for (let i = 1; i <= topicList.value.length; i++) {
+        checkList = checkList.concat(itemRefs[i - 1].getCheckedKeys()).concat(itemRefs[i - 1].getHalfCheckedKeys())
+      }
+      const listTemp: {privilegeId:string}[] = []
 
       checkList.forEach(item => {
         listTemp.push({
           privilegeId: item
-          // privilegeIdentity: 1
         })
       })
 
       SYS_PERMISSION_ATTRIBUTE_SAVE({
-        // factory: JSON.parse(sessionStorage.getItem('factory') || '{}').id,
         roleId: roleID.value,
         list: listTemp
       }).then(() => {
@@ -176,10 +167,11 @@ export default defineComponent({
       topicList.value[index].hide = !topicList.value[index].hide
     }
 
-    const setItemRef = () => {
-      // refList.value.push(ref)
-      // console.log('refList.value')
-      // console.log(refList.value)
+    const setItemRef = (el:typeof ElTree) => {
+      console.log('el-tree ref getting')
+      console.log(typeof el)
+      console.log(el)
+      itemRefs.push(el)
     }
 
     return {
@@ -190,7 +182,8 @@ export default defineComponent({
       isDialogShow,
       controlShow,
       setItemRef,
-      deptListTree1Ref
+      ...itemRefs.map(item => { return item })
+      // deptListTree1Ref
       // deptListTree2Ref
     }
   }
