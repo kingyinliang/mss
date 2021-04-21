@@ -67,17 +67,17 @@ import DepartmentManage from './DepartmentManage.vue'
 import FunctionManage from './FunctionManage.vue'
 import DataAuthorityManage from './DataAuthorityManage.vue'
 
-interface DataObject{
-    changed: string;
-    changer: string;
-    created: string;
-    creator: string;
-    id: string;
-    remark: string;
-    roleCode: string;
-    roleName: string;
-    tempFlag: string;
-}
+// interface DataObject{
+//     changed: string;
+//     changer: string;
+//     created: string;
+//     creator: string;
+//     id: string;
+//     remark: string;
+//     roleCode: string;
+//     roleName: string;
+//     tempFlag: string;
+// }
 export default defineComponent({
   name: 'RolePage',
   components: {
@@ -139,8 +139,8 @@ export default defineComponent({
       await nextTick()
       functionManageRef.value.init(id)
     }
-    // 数据权限管理
-    const manageDataAuthority = async (obj?: DataObject) => {
+    // 数据权限管理 test
+    const manageDataAuthority = async (obj?: string) => {
       isDataAuthorityManageShow.value = true
       await nextTick()
       manageataAuthorityRef.value.init(obj)
