@@ -65,8 +65,6 @@ export function isAuth (key:string): boolean {
 /**
  * 树形数据转换
  * @param {*} data
- * @param {*} id
- * @param {*} pid
  */
 export interface MenuBbj {
   id: string;
@@ -117,7 +115,7 @@ export function treeDataTranslate (data: MenuBbj[]):MenuBbj[] {
   return res
 }
 
-export interface MenuBbjV2 {
+export interface TreeDataBbj {
   id: string;
   _level: number;
   parentId: string;
@@ -125,15 +123,14 @@ export interface MenuBbjV2 {
   privilegeIdentity: string;
   privilegeIdentityName: string;
   privilegeName: string;
-  children: MenuBbjV2[]
-}
-interface TempV2 {
-  [key:string]: MenuBbjV2
+  children: TreeDataBbj[]
 }
 
-export function treeDataTranslateOfNormal (data:MenuBbjV2[]) :MenuBbjV2[] {
-  const res: MenuBbjV2[] = []
-  const temp:TempV2 = {}
+export function treeDataTranslateOfNormal (data:TreeDataBbj[]) :TreeDataBbj[] {
+  const res: TreeDataBbj[] = []
+  const temp:{
+    [key:string]: TreeDataBbj
+  } = {}
   for (let i = 0; i < data.length; i++) {
     temp[data[i].id] = data[i]
   }
@@ -147,7 +144,7 @@ export function treeDataTranslateOfNormal (data:MenuBbjV2[]) :MenuBbjV2[] {
       }
       data[k]._level = temp[data[k].parentId]._level + 1
       temp[data[k].parentId].children.push(data[k])
-      // temp[data[k].parentId].children.sort((a:MenuBbjV2, b:MenuBbjV2) => {
+      // temp[data[k].parentId].children.sort((a:TreeDataBbj, b:TreeDataBbj) => {
       //   return a.id - b.id
       // })
     } else {
@@ -158,4 +155,31 @@ export function treeDataTranslateOfNormal (data:MenuBbjV2[]) :MenuBbjV2[] {
     }
   }
   return res
+}
+
+/**
+ * 时间转换
+ * @param {date} date 时间对象
+ * @param {string} fmt 时间格式
+ */
+export function dateFormat (date:Date, fmt:string):string {
+  const o:{
+    [propName: string]: number
+  } = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds(),
+    'q+': Math.floor((date.getMonth() + 3) / 3),
+    S: date.getMilliseconds()
+  }
+  let fmtTemp = ''
+  if (/(y+)/.test(fmt)) fmtTemp = fmt.replace(RegExp.$1, String(date.getFullYear()).substr(4 - RegExp.$1.length))
+  for (const k in o) {
+    if (new RegExp('(' + k + ')').test(fmtTemp)) {
+      fmtTemp = fmtTemp.replace(RegExp.$1, RegExp.$1.length === 1 ? String(o[k]) : ('00' + o[k]).substr(String(o[k]).length))
+    }
+  }
+  return fmtTemp
 }
