@@ -47,6 +47,8 @@
   <DepartmentManage ref="manageDepartmentRef" v-if="isDepartmentManageShow" @refreshDataList="getItemsList" />
   <UserManage ref="manageUserRef" v-if="isUserManageShow" @refreshDataList="getItemsList" />
   <FunctionManage ref="functionManageRef" v-if="isFunctionManageShow" @refreshDataList="getItemsList" />
+  <DataAuthorityManage ref="manageataAuthorityRef" v-if="isDataAuthorityManageShow" @refreshDataList="getItemsList" />
+
 </template>
 
 <script lang="ts">
@@ -63,14 +65,27 @@ import RoleAddAndUpdate from './RoleAddAndUpdate.vue'
 import UserManage from './UserManage.vue'
 import DepartmentManage from './DepartmentManage.vue'
 import FunctionManage from './FunctionManage.vue'
+import DataAuthorityManage from './DataAuthorityManage.vue'
 
+interface DataObject{
+    changed: string;
+    changer: string;
+    created: string;
+    creator: string;
+    id: string;
+    remark: string;
+    roleCode: string;
+    roleName: string;
+    tempFlag: string;
+}
 export default defineComponent({
   name: 'RolePage',
   components: {
     RoleAddAndUpdate,
     UserManage,
     DepartmentManage,
-    FunctionManage
+    FunctionManage,
+    DataAuthorityManage
   },
   setup () {
     const ctx = getCurrentInstance() as ComponentInternalInstance
@@ -125,10 +140,10 @@ export default defineComponent({
       functionManageRef.value.init(id)
     }
     // 数据权限管理
-    const manageDataAuthority = async (id?: string) => {
+    const manageDataAuthority = async (obj?: DataObject) => {
       isDataAuthorityManageShow.value = true
       await nextTick()
-      manageataAuthorityRef.value.init(id)
+      manageataAuthorityRef.value.init(obj)
     }
     // 部门管理
     const manageDepartment = async (id?: string) => {

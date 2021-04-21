@@ -26,6 +26,9 @@ const configureWebpack = {
 }
 
 module.exports = {
+  devServer: {
+    disableHostCheck: true
+  },
   pages,
   configureWebpack
 }

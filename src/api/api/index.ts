@@ -190,3 +190,45 @@ export function PROPERTY_DATA_QUERY (params = {}): Promise<AxiosResponse> { // �
 export function PROPERTY_DATA_INSERT (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-新增
   return Http.post('/sysProperty/insert', params)
 }
+
+export function SYS_PERMISSION_ATTRIBUTE_ASSIGNMENT_QUERY (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性分配-列表
+  return Http.get('/sysProperty/privilegeList/query', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+
+export function SYS_PERMISSION_ATTRIBUTE_ROLE_ASSIGNMENT_QUERY_BY_ID (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-查询角色分配的属性节点(选中的末端节点)
+  return Http.get('/sysRoleProperty/queryByRoleId', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+
+export function SYS_PERMISSION_ATTRIBUTE_SAVE (params = {}): Promise<AxiosResponse> { // 系统管理-权限属性-分配保存
+  return Http.post('/sysRoleProperty/save', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+
+// ========= RDM ==========
+
+export function PERMISSION_GROUP_QUERY_API (params = {}): Promise<AxiosResponse> { // RDM 数据集分页列表
+  return Http.get('/permissionGroup/queryPage', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_LIST_PERMISSIONCODE_API (params = {}): Promise<AxiosResponse> { // RDM 列出所有权限属性字典
+  return Http.get('/permission/listPermissionCode', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_QUERY_ITEMLIST_API (params = {}): Promise<AxiosResponse> { // RDM 查询数据集下的权限列表
+  return Http.get('/permissionGroup/queryItemList', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_DATASET_SAVE_API (params = {}): Promise<AxiosResponse> { // RDM 数据集保存
+  return Http.post('/permissionGroup/save', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_REMOVE_API (params = {}): Promise<AxiosResponse> { // RDM 数据集删除
+  return Http.get('/permissionGroup/remove', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_QUERY_API (params = {}): Promise<AxiosResponse> { // RDM 属性字典 分页查询
+  return Http.get('/permission/queryPage', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
+
+export function PERMISSION_SAVE_API (params = {}): Promise<AxiosResponse> { // RDM 属性字典 保存
+  return Http.post('/permission/save', params, { baseURL: (process.env.VUE_APP_RDM_API as string) })
+}
