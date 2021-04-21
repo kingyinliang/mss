@@ -1,5 +1,12 @@
+<!--
+ * @Description:
+ * @Anthor: Telliex
+ * @Date: 2021-04-14 10:31:04
+ * @LastEditors: Telliex
+ * @LastEditTime: 2021-04-21 18:04:42
+-->
 <template>
-  <div>home</div>
+  <div> Shinho home</div>
 </template>
 
 <script>
