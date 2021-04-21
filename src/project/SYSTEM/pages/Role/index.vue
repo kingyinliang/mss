@@ -20,8 +20,11 @@
       <el-table-column prop="changed" label="修改时间" width="180" />
       <el-table-column label="操作" min-width="430" fixed="right">
         <template #default="scope">
-          <el-button v-if="isAuth('roleDeptCfg')" type="text" class="role__btn" @click="manageDepartment(scope.row.id)">
+          <!-- <el-button v-if="isAuth('roleDeptCfg')" type="text" class="role__btn" @click="manageDepartment(scope.row.id)">
             部门分配
+          </el-button> -->
+          <el-button v-if="isAuth('')" type="text" class="role__btn" @click="manageDataAuthority(scope.row)">
+            数据权限
           </el-button>
           <el-button v-if="isAuth('roleMenuCfg')" type="text" class="role__btn" @click="manageFunction(scope.row.id)">
             功能分配
@@ -29,9 +32,7 @@
           <el-button v-if="isAuth('roleUserCfg')" type="text" class="role__btn" @click="manageUser(scope.row.id)">
             人员管理
           </el-button>
-          <el-button v-if="isAuth('')" type="text" class="role__btn" @click="manageDataAuthority(scope.row)">
-            数据权限
-          </el-button>
+
           <el-button v-if="isAuth('roleEdit')" type="text" class="role__btn" @click="addOrUpdateItem(scope.row)">
             修改角色
           </el-button>
@@ -67,17 +68,17 @@ import DepartmentManage from './DepartmentManage.vue'
 import FunctionManage from './FunctionManage.vue'
 import DataAuthorityManage from './DataAuthorityManage.vue'
 
-// interface DataObject{
-//     changed: string;
-//     changer: string;
-//     created: string;
-//     creator: string;
-//     id: string;
-//     remark: string;
-//     roleCode: string;
-//     roleName: string;
-//     tempFlag: string;
-// }
+interface DataObject{
+    changed: string;
+    changer: string;
+    created: string;
+    creator: string;
+    id: string;
+    remark: string;
+    roleCode: string;
+    roleName: string;
+    tempFlag: string;
+}
 export default defineComponent({
   name: 'RolePage',
   components: {
@@ -139,8 +140,8 @@ export default defineComponent({
       await nextTick()
       functionManageRef.value.init(id)
     }
-    // 数据权限管理 test
-    const manageDataAuthority = async (obj?: string) => {
+    // 数据权限管理
+    const manageDataAuthority = async (obj?: DataObject) => {
       isDataAuthorityManageShow.value = true
       await nextTick()
       manageataAuthorityRef.value.init(obj)
