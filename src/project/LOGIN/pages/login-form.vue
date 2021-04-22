@@ -87,7 +87,7 @@ export default defineComponent({
           }).then(() => {
             localStorage.setItem('vuex', '')
             sessionStorage.setItem('systemName', query.tenant || '')
-            window.location.href = '/SYSTEM.html'
+            window.location.href = '/SYSTEM'
           })
         })
       }
