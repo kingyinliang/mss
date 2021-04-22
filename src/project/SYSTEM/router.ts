@@ -22,7 +22,7 @@ const mainRouter: RouteRecordRaw = {
 }
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL + 'SYSTEM.html'),
+  history: createWebHistory(process.env.BASE_URL + 'SYSTEM'),
   routes: globalRoutes.concat(mainRouter)
 })
 
