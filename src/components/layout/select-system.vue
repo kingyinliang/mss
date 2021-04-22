@@ -35,7 +35,7 @@ export default defineComponent({
       }).then(() => {
         localStorage.setItem('vuex', '')
         sessionStorage.setItem('systemName', system.systemCode)
-        window.location.href = '/SYSTEM.html'
+        window.location.href = '/SYSTEM'
       })
     }
     watch(modelValue, () => {
