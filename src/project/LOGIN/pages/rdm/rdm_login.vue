@@ -1,21 +1,21 @@
 <template>
   <div class="login_bg"></div>
   <div class="form_login">
-    <el-form ref="loginForm" :model="loginForm" status-icon label-width="100px" class="loginForm_ui2" @keyup.enter="submit">
+    <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" status-icon label-width="100px" class="loginForm_ui2" @keyup.enter="submit">
       <p class="login_title1">
         欢迎使用
       </p>
       <p class="login_title2">
         RDM研发管理系统
       </p>
-      <el-form-item prop="user" style="margin-bottom: 24px;">
+      <el-form-item prop="userName" style="margin-bottom: 24px;">
         <el-input v-model="loginForm.userName" auto-complete="off" placeholder="账户/工号">
           <template #prefix>
             <i class="iconfont factory-zhanghaodenglu" />
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="pass">
+      <el-form-item prop="password">
         <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码">
           <template #prefix>
             <i class="iconfont factory-mima" />
@@ -40,11 +40,13 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'RdmLogin',
   setup () {
-    const { loginForm, clearForm, submit } = loginTs()
+    const { loginFormRef, loginForm, clearForm, submit, loginRules } = loginTs()
 
     return {
+      loginFormRef,
       loginForm,
       clearForm,
+      loginRules,
       submit
     }
   }

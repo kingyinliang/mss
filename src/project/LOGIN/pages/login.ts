@@ -21,6 +21,7 @@ interface LoginForm {
   terminal: string
 }
 interface LoginTs {
+  loginFormRef: Ref
   // eslint-disable-next-line
   loginRules: any
   systemName: Ref<string>
@@ -36,6 +37,7 @@ export default function (): LoginTs {
   const ctx = getCurrentInstance() as ComponentInternalInstance
   const proxy = ctx.proxy as ComponentPublicInstance
 
+  const loginFormRef = ref()
   const systemName = ref('mss')
   const eye = ref(false)
   const visible = ref(false)
@@ -46,9 +48,6 @@ export default function (): LoginTs {
   })
 
   const userNameRules = (rule: string, value: string, callback: (ctx?: Error) => void) => {
-    console.log(rule)
-    console.log(value)
-    console.log(callback)
     if (value === '') {
       return callback(new Error('请输入账号'))
     } else if (value.length !== 8) {
@@ -89,6 +88,8 @@ export default function (): LoginTs {
       } else {
         systemName.value = 'MssLogin'
       }
+    } else {
+      systemName.value = 'MssLogin'
     }
     if (query.token) {
       proxy.$cookies.set('token', query.token)
@@ -112,32 +113,36 @@ export default function (): LoginTs {
     loginForm.password = ''
   }
   const submit = () => {
-    const query:QueryObj = proxy.$route.query
+    loginFormRef.value.validate((valid:boolean) => {
+      if (valid) {
+        const query:QueryObj = proxy.$route.query
 
-    const clientId = query.clientId || 'baca244f8f0111eb9c21026438001fa4'
-    const responseType = query.responseType || 'client'
-    const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
-    const redirectUri = query.redirectUri
-    const url = `clientId=${clientId}&responseType=${responseType}`
-    LOGIN(url, loginForm).then(({ data }) => {
-      if (redirectUri) {
-        // sso
-        GET_TOKEN({
-          clientId: clientId,
-          clientSecret: clientSecret,
-          grantType: 'authorization_code',
-          code: data.data,
-          redirectUri: redirectUri
-        }).then(res => {
-          proxy.$cookies.set('token', res.data.data.token)
-          sessionStorage.setItem('userInfo', res.data.data || {})
-          createProxy(redirectUri, res.data.data.token)
+        const clientId = query.clientId || 'baca244f8f0111eb9c21026438001fa4'
+        const responseType = query.responseType || 'client'
+        const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
+        const redirectUri = query.redirectUri
+        const url = `clientId=${clientId}&responseType=${responseType}`
+        LOGIN(url, loginForm).then(({ data }) => {
+          if (redirectUri) {
+            // sso
+            GET_TOKEN({
+              clientId: clientId,
+              clientSecret: clientSecret,
+              grantType: 'authorization_code',
+              code: data.data,
+              redirectUri: redirectUri
+            }).then(res => {
+              proxy.$cookies.set('token', res.data.data.token)
+              sessionStorage.setItem('userInfo', res.data.data || {})
+              createProxy(redirectUri, res.data.data.token)
+            })
+          } else {
+            proxy.$cookies.set('token', data.data.token)
+            sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
+            // mss
+            visible.value = true
+          }
         })
-      } else {
-        proxy.$cookies.set('token', data.data.token)
-        sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
-        // mss
-        visible.value = true
       }
     })
   }
@@ -149,8 +154,10 @@ export default function (): LoginTs {
       text: '加载中……',
       background: 'rgba(255, 255, 255, 0.7)'
     })
-    const iframe = document.createElement('iframe')
+    // eslint-disable-next-line
+    const iframe: any = document.createElement('iframe')
     iframe.src = redirectUri + `?token=${token}`
+    iframe.style = 'position: fixed; bottom: 0;left: 0; display: none'
     document.getElementsByTagName('body')[0].appendChild(iframe)
     iframe.onload = function () {
       _loading.close()
@@ -160,6 +167,7 @@ export default function (): LoginTs {
   }
 
   return {
+    loginFormRef,
     loginRules,
     systemName,
     eye,

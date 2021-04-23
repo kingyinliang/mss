@@ -9,21 +9,21 @@
     </el-col>
     <el-col :span="8">
       <img src="@/assets/img/login/MDSlogo.png" alt="" class="login_icon">
-      <el-form :model="loginForm" status-icon label-width="100px" class="loginForm_ui" @keyup.enter="submit">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" status-icon label-width="100px" class="loginForm_ui" @keyup.enter="submit">
         <p class="login_title1">
           欢迎使用
         </p>
         <p class="login_title2">
           MDS制造管理系统
         </p>
-        <el-form-item prop="user">
+        <el-form-item prop="userName">
           <el-input v-model="loginForm.userName" auto-complete="off" placeholder="账户/工号">
             <template #prefix>
               <em class="iconfont factory-zhanghaodenglu" />
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item prop="pass">
+        <el-form-item prop="password">
           <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码">
             <template #prefix>
               <em class="iconfont factory-mima" />
@@ -51,7 +51,7 @@ import { LoginAnimation } from './loginCanvas'
 export default defineComponent({
   name: 'MdsLogin',
   setup () {
-    const { loginForm, clearForm, submit } = loginTs()
+    const { loginFormRef, loginForm, clearForm, submit, loginRules } = loginTs()
 
     onMounted((): void => {
       const canvas = new LoginAnimation()
@@ -59,7 +59,9 @@ export default defineComponent({
     })
 
     return {
+      loginFormRef,
       loginForm,
+      loginRules,
       clearForm,
       submit
     }

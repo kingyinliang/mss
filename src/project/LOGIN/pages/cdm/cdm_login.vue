@@ -1,7 +1,7 @@
 <template>
   <div class="login_bg">
     <div class="loginRightBg">
-      <el-form ref="loginForm" :model="loginForm" status-icon label-width="100px" class="loginForm" @keyup.enter="submit">
+      <el-form ref="loginFormRef" :model="loginForm" status-icon :rules="loginRules" label-width="100px" class="loginForm" @keyup.enter="submit">
         <p class="login_title1">
           你好，欢迎登录
         </p>
@@ -41,9 +41,10 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'CdmLogin',
   setup () {
-    const { loginForm, clearForm, submit, loginRules } = loginTs()
+    const { loginFormRef, loginForm, clearForm, submit, loginRules } = loginTs()
 
     return {
+      loginFormRef,
       loginForm,
       clearForm,
       submit,
