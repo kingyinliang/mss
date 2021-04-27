@@ -135,6 +135,10 @@ export default function (): LoginTs {
               proxy.$cookies.set('token', res.data.data.token)
               sessionStorage.setItem('userInfo', res.data.data || {})
               createProxy(redirectUri, res.data.data.token)
+              // GET_LOGIN_INFO({
+              //   accessToken: res.data.data.token,
+              //   tenant: 'MSS'
+              // })
             })
           } else {
             proxy.$cookies.set('token', data.data.token)

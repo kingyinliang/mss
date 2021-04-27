@@ -22,9 +22,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="职务：">
-          <el-select v-model="dataForm.post" size="small" style="width: 100%;" filterable clearable>
+          <el-select v-model="dataForm.postType" size="small" style="width: 100%;" filterable clearable>
             <el-option v-for="(item) in postOptions" :key="item.dictCode" :value="item.dictCode" :label="item.dictValue" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="职务描述：">
+          <el-input v-model="dataForm.postName" placeholder="手动输入" clearable />
         </el-form-item>
         <el-form-item label="邮箱：">
           <el-input v-model="dataForm.email" placeholder="手动输入" clearable />
@@ -67,7 +70,8 @@ interface DataForm{
   factory?: string
   tempFlag?: string
   sex?: string
-  post?: string
+  postType?: string
+  postName?: string
   email?: string
   phone?: string
 }
@@ -152,7 +156,8 @@ export default defineComponent({
           realName: '',
           tempFlag: '',
           sex: '',
-          post: '',
+          postType: '',
+          postName: '',
           email: '',
           phone: ''
         }
