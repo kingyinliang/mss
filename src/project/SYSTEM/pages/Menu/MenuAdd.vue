@@ -56,7 +56,7 @@
               <template #reference>
                 <el-input v-model="dataForm.menuIcon" placeholder="菜单图标名称" class="icon-list__input" clearable />
               </template>
-              <div class="mod-menu__icon-list">
+              <div class="mod-menu__icon-list" style="overflow: scroll;">
                 <el-button
                   v-for="(item, index) in iconList"
                   :key="index"
@@ -137,6 +137,7 @@ export default defineComponent({
       'factory-yibiao',
       'factory-icon-test',
       'factory-baozhuang',
+      'factory-baozhuang1',
       'factory-filter',
       'factory-chechuangjiqiren',
       'factory-qiyaguanjianhua',
@@ -149,6 +150,13 @@ export default defineComponent({
       'factory-yuanshui',
       'factory-wendangguanli',
       'factory-kucunguanli',
+      'factory-xiangmu1',
+      'factory-jichushuju',
+      'factory-huaxue',
+      'factory-faguiziliaoku',
+      'factory-xiangmu11',
+      'factory-yanfa',
+      'factory-biaozhi',
       'factory-calc'
     ]
     const dataRule = {
