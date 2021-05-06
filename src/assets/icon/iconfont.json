@@ -6,6 +6,62 @@
   "description": "味达美工厂后台管理系统",
   "glyphs": [
     {
+      "icon_id": "58834",
+      "name": "包装",
+      "font_class": "baozhuang1",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "6615485",
+      "name": "项目",
+      "font_class": "xiangmu1",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
+      "icon_id": "7609082",
+      "name": "基础数据",
+      "font_class": "jichushuju",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "7703838",
+      "name": "化学",
+      "font_class": "huaxue",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
+      "icon_id": "11609192",
+      "name": "法规资料库",
+      "font_class": "faguiziliaoku",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "14444864",
+      "name": "项目",
+      "font_class": "xiangmu11",
+      "unicode": "e720",
+      "unicode_decimal": 59168
+    },
+    {
+      "icon_id": "17414293",
+      "name": "研发",
+      "font_class": "yanfa",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "17815830",
+      "name": "标志",
+      "font_class": "biaozhi",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
       "icon_id": "4182363",
       "name": "AK-IN_闭眼_fill",
       "font_class": "in_biyan_fill",
