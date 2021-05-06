@@ -1,12 +1,5 @@
-<!--
- * @Description:
- * @Anthor: Telliex
- * @Date: 2021-04-14 10:31:04
- * @LastEditors: Telliex
- * @LastEditTime: 2021-04-21 18:04:42
--->
 <template>
-  <div> Shinho home</div>
+  <img src="@/assets/img/layout/index.svg" style=" display: block; width: 80%; margin: 120px auto;" alt="welcome">
 </template>
 
 <script>
