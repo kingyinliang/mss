@@ -68,8 +68,8 @@ export default function (): LoginTs {
     password: [
       {
         min: 8,
-        max: 12,
-        message: '长度在 8 到 12 个字符',
+        max: 30,
+        message: '长度在 8 到 30 个字符',
         trigger: 'blur'
       },
       { validator: passwordRules, trigger: 'blur' }
