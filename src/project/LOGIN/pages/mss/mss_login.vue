@@ -20,7 +20,7 @@
           <div class="login_form_main_input" style="margin-bottom: 11.5%;">
             <p>密码:</p>
             <el-form-item prop="password">
-              <el-input v-model="loginForm.password" :type="eye? 'text' : 'password'" auto-complete="off" placeholder="密码">
+              <el-input v-model="loginForm.password" :type="eye? 'text' : 'password'" auto-complete="off" placeholder="密码" @keyup.enter="submit">
                 <template #prefix>
                   <i class="iconfont factory-zu" />
                 </template>
