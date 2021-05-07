@@ -29,11 +29,17 @@
         <el-input v-model="dataForm.menuName" :placeholder="'名称'" />
       </el-form-item>
       <el-form-item label="上级菜单：" prop="parentName">
-        <el-popover ref="menuListPopover" placement="bottom-start" trigger="click" style="height: 100%; overflow: auto;">
+        <el-popover placement="bottom-start" trigger="click" popper-class="mod-menu__icon-popover">
           <template #reference>
             <el-input v-model="dataForm.parentName" :readonly="true" placeholder="点击选择上级菜单" class="menu-list__input" />
           </template>
-            <el-tree ref="menuListTree" :data="menuList" :props="menuListTreeProps" node-key="id" :default-expand-all="false" :highlight-current="true" :expand-on-click-node="false" @current-change="menuListTreeCurrentChangeHandle" />
+          <div style="height: 200px; overflow: scroll;">
+            <el-tree ref="menuListTree" :data="menuList" :props="menuListTreeProps" node-key="id" :default-expand-all="false" :highlight-current="true" :expand-on-click-node="false" @current-change="menuListTreeCurrentChangeHandle">
+              <template #default="node">
+                {{ `${node.data.menuName} ${node.data.remark}` }}
+              </template>
+            </el-tree>
+          </div>
         </el-popover>
       </el-form-item>
       <el-form-item
