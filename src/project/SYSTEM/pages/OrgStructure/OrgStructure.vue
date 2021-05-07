@@ -188,7 +188,7 @@ export default defineComponent({
     const ctx = getCurrentInstance() as ComponentInternalInstance
     // eslint-disable-next-line
     const proxy = ctx.proxy as any
-    const isRedact = ref(false)
+    const isRedact = ref(true)
     const OrgDetail = ref({} as OrgData)
     const clickTreeNode = ref({} as OrgData)
     const addDep = ref({} as OrgData)
@@ -360,6 +360,7 @@ export default defineComponent({
       })
     })
     return {
+      dataFormRef,
       dialogFormVisible1,
       orgViewRef,
       menuVisible,
