@@ -42,7 +42,7 @@
     </el-table>
     <el-pagination :current-page="dataForm.current" :page-sizes="[10, 20, 50]" :page-size="dataForm.size" layout="total, sizes, prev, pager, next, jumper" :total="dataForm.totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </mds-card>
-  <el-dialog v-model="visible" :title="`${selctUser.realName}（${selctUser.workNum}）角色选择`" :close-on-click-modal="false" width="740px">
+  <el-dialog v-model="visible" :title="`${selctUser.realName}（${selctUser.workNum}）角色选择`" :close-on-click-modal="false" width="536px">
     <div class="uaer-detail">
       <el-transfer
         v-model="selctRoleId"
@@ -51,8 +51,13 @@
         :filter-method="filterMethod"
         filter-placeholder="请输入角色名称"
         :data="RoleList"
-        :props="{key: 'id',label: 'roleName'}"
-      />
+      >
+        <template #default="{option}">
+          <el-tooltip class="item" effect="dark" :content="option.roleName" placement="top-end">
+            <span>{{ option.roleName }}</span>
+          </el-tooltip>
+        </template>
+      </el-transfer>
     </div>
     <template #footer>
       <span class="dialog-footer">
