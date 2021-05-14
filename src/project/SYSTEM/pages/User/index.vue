@@ -51,6 +51,7 @@
         :filter-method="filterMethod"
         filter-placeholder="请输入角色名称"
         :data="RoleList"
+        :props="{key: 'id',label: 'roleName'}"
       >
         <template #default="{option}">
           <el-tooltip class="item" effect="dark" :content="option.roleName" placement="top-end">
