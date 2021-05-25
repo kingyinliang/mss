@@ -4,7 +4,7 @@ import {
   getCurrentInstance, reactive, Ref, ref, UnwrapRef
 } from 'vue'
 import { ElLoading } from 'element-plus'
-import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT } from '@/api/api'
+import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT, TEST } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -143,8 +143,12 @@ export default function (): LoginTs {
           } else {
             proxy.$cookies.set('token', data.data.token)
             sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
+            document.cookie = `cookie=${data.data.token};domain=apimarket-dev.shinho.net.cn`
             // mss
             visible.value = true
+            // TEST().then(({ data }) => {
+            //   console.log(data)
+            // })
           }
         })
       }
