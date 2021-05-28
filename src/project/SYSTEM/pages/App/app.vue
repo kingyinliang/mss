@@ -8,6 +8,7 @@
     <el-form ref="dataFormRef" :model="dataForm" :rules="dataRule" label-width="120px" size="small" style="width: 550px;">
       <el-form-item label="当前版本号：">
         {{ version }}
+        <a :href="downUrl" download>下载</a>
       </el-form-item>
       <el-form-item label="版本号：" prop="appVersion">
         <el-input v-model="dataForm.appVersion" placeholder="请输入版本号：" style="width: 400px;" />
@@ -51,7 +52,7 @@ import {
   ref
 } from 'vue'
 import axios from 'axios'
-import { APP_SAVE, UPLOAD_APK } from '@/api/api'
+import { APP_SAVE, UPLOAD_APK, APP_VERSION } from '@/api/api'
 export default defineComponent({
   name: 'AppPage',
   setup () {
@@ -88,6 +89,7 @@ export default defineComponent({
         }
       ]
     }
+    const downUrl = ref('')
     const version = ref('')
     const uploadP = ref(0)
 
@@ -122,13 +124,15 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // APP_VERSION().then(({ data }) => {
-      //   version.value = data.data.appVersion
-      // })
+      APP_VERSION().then(({ data }) => {
+        version.value = data.data.appVersion
+        downUrl.value = data.data.downLoadUrl
+      })
     })
 
     return {
       version,
+      downUrl,
       dataFormRef,
       dataForm,
       dataRule,
