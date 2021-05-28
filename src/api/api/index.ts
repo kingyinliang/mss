@@ -1,12 +1,6 @@
 import { AxiosResponse } from 'axios'
 import Http from '../http/axios'
 
-export function TEST (params = {}):Promise<AxiosResponse> {
-  return Http.get('/test', params, {
-    baseURL: (process.env.VUE_APP_TEST_API as string) + (process.env.VUE_APP_API_V as string),
-    withCredentials: true
-  })
-}
 export function LOGIN (url: string, params = {}):Promise<AxiosResponse> {
   return Http.post('/oauth2/authorize?' + url, params, {
     baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string)

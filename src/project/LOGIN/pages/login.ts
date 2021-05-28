@@ -4,7 +4,7 @@ import {
   getCurrentInstance, reactive, Ref, ref, UnwrapRef
 } from 'vue'
 import { ElLoading } from 'element-plus'
-import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT, TEST } from '@/api/api'
+import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT } from '@/api/api'
 
 interface QueryObj {
   url?: string;
