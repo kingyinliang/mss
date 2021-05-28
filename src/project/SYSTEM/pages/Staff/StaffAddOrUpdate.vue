@@ -10,7 +10,7 @@
           </el-button>
         </el-form-item>
         <el-form-item label="人员工号：" prop="workNum">
-          <el-input v-model="dataForm.workNum" placeholder="手动输入" clearable />
+          <el-input v-model="dataForm.workNum" placeholder="手动输入" clearable @change="setTempFlag" />
         </el-form-item>
         <el-form-item label="人员姓名：" prop="realName">
           <el-input v-model="dataForm.realName" placeholder="手动输入" auto-complete="off" clearable />
@@ -28,6 +28,12 @@
         </el-form-item>
         <el-form-item label="职务描述：">
           <el-input v-model="dataForm.postName" placeholder="手动输入" clearable />
+        </el-form-item>
+        <el-form-item label="工种：">
+          <el-select v-model="dataForm.tempFlag" placeholder="请选择" style="width: 100%;">
+            <el-option label="临时工" value="Y" />
+            <el-option label="正式工" value="N" />
+          </el-select>
         </el-form-item>
         <el-form-item label="邮箱：">
           <el-input v-model="dataForm.email" placeholder="手动输入" clearable />
@@ -169,15 +175,17 @@ export default defineComponent({
         postOptions.value = data.data
       })
     }
+    const setTempFlag = () => {
+      const patt = new RegExp('^[A-Z]')
+      if (patt.test(dataForm.value.workNum)) {
+        dataForm.value.tempFlag = 'Y'
+      } else {
+        dataForm.value.tempFlag = 'N'
+      }
+    }
     const submitDataForm = () => {
       dataFormRef.value.validate((valid:boolean) => {
         if (valid) {
-          const patt = new RegExp('^[A-Z]')
-          if (patt.test(dataForm.value.workNum)) {
-            dataForm.value.tempFlag = 'Y'
-          } else {
-            dataForm.value.tempFlag = 'N'
-          }
           const net = dataForm.value.id ? USER_UPDATE : USER_INSERT
           net(dataForm.value).then(() => {
             emit('refreshDataList')
@@ -202,6 +210,7 @@ export default defineComponent({
       dataForm,
       checkRules,
       init,
+      setTempFlag,
       submitDataForm,
       setDepartment
     }
