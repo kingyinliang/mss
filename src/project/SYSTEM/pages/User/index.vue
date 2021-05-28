@@ -42,7 +42,7 @@
     </el-table>
     <el-pagination :current-page="dataForm.current" :page-sizes="[10, 20, 50]" :page-size="dataForm.size" layout="total, sizes, prev, pager, next, jumper" :total="dataForm.totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </mds-card>
-  <el-dialog v-model="visible" :title="`${selctUser.realName}（${selctUser.workNum}）角色选择`" :close-on-click-modal="false" width="536px">
+  <el-dialog v-model="visible" :title="`${selctUser.realName}（${selctUser.workNum}）角色选择`" :close-on-click-modal="false" width="736px">
     <div class="uaer-detail">
       <el-transfer
         v-model="selctRoleId"
@@ -194,6 +194,10 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.uaer-detail{
+  /deep/.el-transfer-panel{
+    width: 300px;
+  }
+}
 </style>
