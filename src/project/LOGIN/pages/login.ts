@@ -119,36 +119,36 @@ export default function (): LoginTs {
 
         const clientId = query.clientId || 'baca244f8f0111eb9c21026438001fa4'
         const responseType = query.responseType || 'client'
-        const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
+        // const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
         const redirectUri = query.redirectUri
         const url = `clientId=${clientId}&responseType=${responseType}`
         LOGIN(url, loginForm).then(({ data }) => {
           if (redirectUri) {
+            window.location.href = redirectUri
             // sso
-            GET_TOKEN({
-              clientId: clientId,
-              clientSecret: clientSecret,
-              grantType: 'authorization_code',
-              code: data.data,
-              redirectUri: redirectUri
-            }).then(res => {
-              proxy.$cookies.set('token', res.data.data.token)
-              sessionStorage.setItem('userInfo', res.data.data || {})
-              createProxy(redirectUri, res.data.data.token)
-              // GET_LOGIN_INFO({
-              //   accessToken: res.data.data.token,
-              //   tenant: 'MSS'
-              // })
-            })
+            // GET_TOKEN({
+            //   clientId: clientId,
+            //   clientSecret: clientSecret,
+            //   grantType: 'authorization_code',
+            //   code: data.data,
+            //   redirectUri: redirectUri
+            // }).then(res => {
+            //   proxy.$cookies.set('token', res.data.data.token)
+            //   sessionStorage.setItem('userInfo', res.data.data || {})
+            //   createProxy(redirectUri, res.data.data.token)
+            //   // GET_LOGIN_INFO({
+            //   //   accessToken: res.data.data.token,
+            //   //   tenant: 'MSS'
+            //   // })
+            // })
           } else {
             proxy.$cookies.set('token', data.data.token)
             sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
-            document.cookie = `cookie=${data.data.token};domain=apimarket-dev.shinho.net.cn`
             // mss
             visible.value = true
-            // TEST().then(({ data }) => {
-            //   console.log(data)
-            // })
+            GET_TOKEN({
+              tenant: 'MDS'
+            })
           }
         })
       }

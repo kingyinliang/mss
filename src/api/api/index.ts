@@ -2,24 +2,23 @@ import { AxiosResponse } from 'axios'
 import Http from '../http/axios'
 
 export function LOGIN (url: string, params = {}):Promise<AxiosResponse> {
-  return Http.post('/oauth2/authorize?' + url, params, {
+  return Http.post('/oauth2/authorize?' + url, params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+export function GET_LOGIN_INFO (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/login', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+// export function GET_TOKEN (params = {}):Promise<AxiosResponse> {
+//   return Http.post('/oauth2/accessToken', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+// }
+export function GET_TOKEN (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysUser/login', params, {
     baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string),
     withCredentials: true
   })
 }
-// export function LOGIN (url: string, params = {}):Promise<AxiosResponse> {
-//   return Http.post('/oauth2/authorize?' + url, params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
-// }
-export function GET_LOGIN_INFO (params = {}):Promise<AxiosResponse> {
-  return Http.post('/sysUser/login', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
-}
-export function GET_TOKEN (params = {}):Promise<AxiosResponse> {
-  return Http.post('/oauth2/accessToken', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
-}
 export function GET_TENANT_BY_USER_ID (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysTenant/queryUserTenant', params, {
-    baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string),
-    withCredentials: true
+    baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string)
   })
 }
 export function GET_TENANT (params = {}):Promise<AxiosResponse> {
