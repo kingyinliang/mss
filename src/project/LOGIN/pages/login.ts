@@ -4,7 +4,7 @@ import {
   getCurrentInstance, reactive, Ref, ref, UnwrapRef
 } from 'vue'
 import { ElLoading } from 'element-plus'
-import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT } from '@/api/api'
+import { GET_LOGIN_INFO, LOGIN, UPDATE_TENANT } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -124,7 +124,10 @@ export default function (): LoginTs {
         const url = `clientId=${clientId}&responseType=${responseType}`
         LOGIN(url, loginForm).then(({ data }) => {
           if (redirectUri) {
-            // window.location.href = redirectUri
+            // setTimeout(() => {
+            //   window.location.href = redirectUri
+            // }, 1000)
+            window.location.href = redirectUri
             // sso
             // GET_TOKEN({
             //   clientId: clientId,
@@ -146,9 +149,6 @@ export default function (): LoginTs {
             sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
             // mss
             visible.value = true
-            GET_TOKEN({
-              tenant: 'MDS'
-            })
           }
         })
       }
