@@ -2,7 +2,10 @@ import { AxiosResponse } from 'axios'
 import Http from '../http/axios'
 
 export function LOGIN (url: string, params = {}):Promise<AxiosResponse> {
-  return Http.post('/oauth2/authorize?' + url, params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+  return Http.post('/oauth2/authorize?' + url, params, {
+    baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string),
+    withCredentials: true
+  })
 }
 export function GET_LOGIN_INFO (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysUser/login', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
