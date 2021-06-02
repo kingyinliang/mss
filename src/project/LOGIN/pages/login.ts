@@ -124,7 +124,7 @@ export default function (): LoginTs {
         const url = `clientId=${clientId}&responseType=${responseType}`
         LOGIN(url, loginForm).then(({ data }) => {
           if (redirectUri) {
-            window.location.href = redirectUri
+            // window.location.href = redirectUri
             // sso
             // GET_TOKEN({
             //   clientId: clientId,
