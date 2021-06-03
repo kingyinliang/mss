@@ -4,7 +4,7 @@ import {
   getCurrentInstance, reactive, Ref, ref, UnwrapRef
 } from 'vue'
 import { ElLoading } from 'element-plus'
-import { GET_LOGIN_INFO, LOGIN, UPDATE_TENANT } from '@/api/api'
+import { GET_LOGIN_INFO, GET_TOKEN, LOGIN, UPDATE_TENANT } from '@/api/api'
 
 interface QueryObj {
   url?: string;
@@ -119,31 +119,28 @@ export default function (): LoginTs {
 
         const clientId = query.clientId || 'baca244f8f0111eb9c21026438001fa4'
         const responseType = query.responseType || 'client'
-        // const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
+        const clientSecret = query.clientSecret || 'baca244f8f0111eb9c21026438001fa4'
         const redirectUri = query.redirectUri
         const url = `clientId=${clientId}&responseType=${responseType}`
         LOGIN(url, loginForm).then(({ data }) => {
           if (redirectUri) {
-            // setTimeout(() => {
-            //   window.location.href = redirectUri
-            // }, 1000)
-            window.location.href = redirectUri
             // sso
-            // GET_TOKEN({
-            //   clientId: clientId,
-            //   clientSecret: clientSecret,
-            //   grantType: 'authorization_code',
-            //   code: data.data,
-            //   redirectUri: redirectUri
-            // }).then(res => {
-            //   proxy.$cookies.set('token', res.data.data.token)
-            //   sessionStorage.setItem('userInfo', res.data.data || {})
-            //   createProxy(redirectUri, res.data.data.token)
-            //   // GET_LOGIN_INFO({
-            //   //   accessToken: res.data.data.token,
-            //   //   tenant: 'MSS'
-            //   // })
-            // })
+            GET_TOKEN({
+              clientId: clientId,
+              clientSecret: clientSecret,
+              grantType: 'authorization_code',
+              code: data.data,
+              redirectUri: redirectUri
+            }).then(res => {
+              proxy.$cookies.set('token', res.data.data.token)
+              sessionStorage.setItem('userInfo', res.data.data || {})
+              window.location.href = redirectUri
+              // createProxy(redirectUri, res.data.data.token)
+              // GET_LOGIN_INFO({
+              //   accessToken: res.data.data.token,
+              //   tenant: 'MSS'
+              // })
+            })
           } else {
             proxy.$cookies.set('token', data.data.token)
             sessionStorage.setItem('userInfo', JSON.stringify(data.data || {}))
