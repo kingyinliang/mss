@@ -22,8 +22,7 @@ import {
   defineComponent,
   watch,
   toRefs,
-  ref,
-  getCurrentInstance
+  ref
 } from 'vue'
 import { GET_TENANT_BY_USER_ID, UPDATE_TENANT } from '@/api/api'
 
@@ -33,8 +32,8 @@ export default defineComponent({
     modelValue: Boolean
   },
   setup (props, { emit }) {
-    const ctx = getCurrentInstance()
-    const proxy = ctx.proxy
+    // const ctx = getCurrentInstance()
+    // const proxy = ctx.proxy
 
     const { modelValue } = toRefs(props)
     const system = ref([])
@@ -62,21 +61,21 @@ export default defineComponent({
         userId: userInfo.id
       }).then((res) => {
         system.value = res.data.data
-        const token = proxy.$cookies.get('token')
-        res.data.data.forEach((item) => {
-          createProxy(item.redirectUri, token)
-        })
+        // const token = proxy.$cookies.get('token')
+        // res.data.data.forEach((item) => {
+        //   createProxy(item.redirectUri, token)
+        // })
       })
     })
-    const createProxy = (redirectUri, token) => {
-      const iframe = document.createElement('iframe')
-      iframe.src = redirectUri + `?token=${token}`
-      iframe.style = 'position: fixed; bottom: 0;left: 0; display: none'
-      document.getElementsByTagName('body')[0].appendChild(iframe)
-      iframe.onload = function () {
-        document.body.removeChild(iframe)
-      }
-    }
+    // const createProxy = (redirectUri, token) => {
+    //   const iframe = document.createElement('iframe')
+    //   iframe.src = redirectUri + `?token=${token}`
+    //   iframe.style = 'position: fixed; bottom: 0;left: 0; display: none'
+    //   document.getElementsByTagName('body')[0].appendChild(iframe)
+    //   iframe.onload = function () {
+    //     document.body.removeChild(iframe)
+    //   }
+    // }
 
     return {
       system,
