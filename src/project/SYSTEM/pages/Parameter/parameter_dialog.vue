@@ -166,7 +166,7 @@ export default defineComponent({
               factory: factory.value,
               dictName: dataForm.value.dictName,
               dictType: dataForm.value.dictType,
-              id: dataForm.value.parentId
+              id: dataForm.value.id
             }
           } else if (!isParasType.value && isAddParas.value) {
             http = DICT_ITEM_ADD
