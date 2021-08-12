@@ -21,6 +21,12 @@
             <el-option label="女" value="F" />
           </el-select>
         </el-form-item>
+        <el-form-item label="停用启用：">
+          <el-select v-model="dataForm.status" placeholder="请选择" style="width: 100%;">
+            <el-option label="启用" value="A" />
+            <el-option label="停用" value="F" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="职务：">
           <el-select v-model="dataForm.postType" size="small" style="width: 100%;" filterable clearable>
             <el-option v-for="(item) in postOptions" :key="item.dictCode" :value="item.dictCode" :label="item.dictValue" />
@@ -40,6 +46,15 @@
         </el-form-item>
         <el-form-item label="手机号：">
           <el-input v-model="dataForm.phone" placeholder="手动输入" clearable />
+        </el-form-item>
+        <el-form-item label="有效期：">
+          <el-date-picker
+            v-model="dataForm.effectiveDate"
+            type="date"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            placeholder="请选选择日期"
+            style="width: 100%;" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -80,6 +95,8 @@ interface DataForm{
   postName?: string
   email?: string
   phone?: string
+  status?: string
+  effectiveDate?: string
 }
 export default defineComponent({
   name: 'StaffAddOrUpdate',
@@ -165,7 +182,9 @@ export default defineComponent({
           postType: '',
           postName: '',
           email: '',
-          phone: ''
+          phone: '',
+          status: 'A',
+          effectiveDate: '2099-01-01'
         }
       }
       isDialogShow.value = true

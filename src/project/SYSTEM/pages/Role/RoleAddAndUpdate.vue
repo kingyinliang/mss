@@ -1,6 +1,11 @@
 <template>
   <el-dialog :title="dataForm.id ? '修改角色信息' : '新增角色'" :close-on-click-modal="false" v-model="isDialogShow">
     <el-form ref="dataFormRef" :model="dataForm" label-width="100px" :rules="checkRules">
+      <el-form-item v-if="!dataForm.id" label="复制角色：">
+        <el-select v-model="dataForm.copyIdList" style="width: 100%;" filterable multiple>
+          <el-option v-for="(item) in roleList" :key="item.id" :value="item.id" :label="item.roleName" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="角色名称：" prop="roleName">
         <el-input v-model="dataForm.roleName" placeholder="手动输入" clearable />
       </el-form-item>
@@ -21,13 +26,14 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import { ROLE_ADD, ROLE_UPDATE } from '@/api/api'
+import { defineComponent, ref, onMounted } from 'vue'
+import { ROLE_ADD, ROLE_LIST, ROLE_UPDATE } from '@/api/api'
 
 export default defineComponent({
   name: 'RoleAddAndUpdate',
   emits: ['refreshDataList'],
   setup (props, { emit }) {
+    const roleList = ref([])
     const checkRules = {
       roleName: [
         { required: true, message: '角色名称', trigger: 'blur' },
@@ -43,6 +49,7 @@ export default defineComponent({
     const isDialogShow = ref(false)
     const dataForm = ref({
       id: '',
+      copyIdList: [],
       roleName: '',
       roleCode: '',
       remark: ''
@@ -52,12 +59,14 @@ export default defineComponent({
     const init = (data) => {
       if (data) {
         dataForm.value.id = data.id
+        dataForm.value.copyIdList = []
         dataForm.value.roleName = data.roleName
         dataForm.value.roleCode = data.roleCode
         dataForm.value.remark = data.remark
       } else {
         dataForm.value = {
           id: '',
+          copyIdList: '',
           roleName: '',
           roleCode: '',
           remark: ''
@@ -77,11 +86,17 @@ export default defineComponent({
       })
     }
 
+    onMounted(async () => {
+      const res = await ROLE_LIST({ current: 1, size: 999999999, roleName: '' })
+      roleList.value = res.data.data.records
+    })
+
     return {
       isDialogShow,
       dataForm,
       dataFormRef,
       checkRules,
+      roleList,
       init,
       submitDataForm
     }
