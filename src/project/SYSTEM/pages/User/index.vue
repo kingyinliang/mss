@@ -14,6 +14,9 @@
           <el-button v-if="isAuth('userQuery')" type="primary" size="small" @click="() => {dataForm.current = 1; GetList()}">
             查询
           </el-button>
+          <el-button type="primary" size="small" @click="exportUser">
+            导出
+          </el-button>
         </el-form-item>
       </el-form>
     </template>
@@ -32,10 +35,13 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column width="80" label="操作">
+      <el-table-column width="120" label="操作">
         <template #default="scope">
           <el-button v-if="isAuth('userReset')" style="padding: 0;" type="text" @click="PasswordReset(scope.row.id)">
             重置密码
+          </el-button>
+          <el-button style="padding: 0;" type="text" @click="Unlock(scope.row.workNum)">
+            解锁
           </el-button>
         </template>
       </el-table-column>
@@ -78,7 +84,7 @@ import {
   ref,
   reactive
 } from 'vue'
-import { USER_LIST, USER_PASSWORD_RESET, USER_ROLE_DROPDOWN, USER_ROLE_UPDATE } from '@/api/api'
+import { USER_LIST, USER_PASSWORD_RESET, USER_ROLE_DROPDOWN, USER_ROLE_UPDATE, USER_UNLOCK, USER_EXPORT } from '@/api/api'
 
 interface Role{
   id: string
@@ -116,6 +122,16 @@ export default defineComponent({
         dataForm.size = data.data.size
         dataForm.totalCount = data.data.total
       })
+    }
+    const exportUser = async () => {
+      const res = await USER_EXPORT()
+      const elink = document.createElement('a')
+      elink.download = '用户管理导出.xls'
+      elink.style.display = 'none'
+      elink.href = res.data.data.url
+      document.body.appendChild(elink)
+      elink.click()
+      document.body.removeChild(elink)
     }
     // 获取角色列表
     const getRoleList = () => {
@@ -169,6 +185,16 @@ export default defineComponent({
       dataForm.current = val
       GetList()
     }
+    const Unlock = (workNum:string) => {
+      proxy.$confirm('确认解锁, 是否继续?', '解锁', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await USER_UNLOCK({ workNum })
+        proxy.$successToast(res.data.msg)
+      })
+    }
 
     onMounted(() => {
       GetList()
@@ -181,6 +207,8 @@ export default defineComponent({
       selctUser,
       RoleList,
       selctRoleId,
+      exportUser,
+      Unlock,
       filterMethod,
       PasswordReset,
       updateRole,

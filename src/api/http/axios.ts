@@ -19,7 +19,7 @@ export class HttpManager {
   constructor () {
     console.log('axios初始化')
     this._axios = axios.create({
-      baseURL: (process.env.VUE_APP_BFF_API as string) + (process.env.VUE_APP_API_V as string),
+      baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string),
       timeout: 30000
       // withCredentials: true
     })

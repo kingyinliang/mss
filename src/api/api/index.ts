@@ -79,7 +79,7 @@ export function GET_DEPT (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysDept/getTypeDept', params)
 }
 export function MENU_ADD (params = {}):Promise<AxiosResponse> {
-  return Http.post('sysMenu/insert', params)
+  return Http.post('/sysMenu/insert', params)
 }
 export function MENU_UPDATE (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysMenu/update', params)
@@ -155,6 +155,12 @@ export function DICT_QUERY (params = {}):Promise<AxiosResponse> {
 }
 export function USER_INSERT (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysUser/insert', params)
+}
+export function USER_UNLOCK (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysUser/unlock', params)
+}
+export function USER_EXPORT (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysUser/export', params)
 }
 export function USER_UPDATE (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysUser/update', params)
