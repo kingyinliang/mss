@@ -76,6 +76,9 @@
           <el-button v-if="!isRedact && isAuth('deptEdit')" type="primary" size="small" @click="saveDetail">
             保存
           </el-button>
+          <el-button v-if="!isRedact && isAuth('deptEdit')" type="primary" size="small" @click="updateTenant">
+            分配租户
+          </el-button>
           <el-button v-if="!isRedact && isAuth('deptDel')" type="danger" size="small" @click="deleteDetail">
             删除
           </el-button>
@@ -153,6 +156,31 @@
       </div>
     </template>
   </el-dialog>
+  <el-dialog v-model="tenantVisible" title="租户选择" :close-on-click-modal="false" width="736px">
+    <div class="uaer-detail">
+      <el-transfer
+        v-model="selectTenantId"
+        filterable
+        :titles="['未分配租户', '已分配租户']"
+        :filter-method="filterMethodTenant"
+        filter-placeholder="请输入租户名称"
+        :data="tenantList"
+        :props="{key: 'systemCode',label: 'systemName'}"
+      >
+        <template #default="{option}">
+          <el-tooltip class="item" effect="dark" :content="option.systemName" placement="top-end">
+            <span>{{ option.systemName }}</span>
+          </el-tooltip>
+        </template>
+      </el-transfer>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button size="small" @click="visible = false">取消</el-button>
+        <el-button type="primary" size="small" @click="UpdateUserTenant">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
   <ul v-show="menuVisible" id="menu">
     <li v-if="isAuth('deptInsert')" class="menuli" @click="menuClick(true, clickTreeNode.parentName, clickTreeNode.parentId)">
       新增同级
@@ -172,7 +200,18 @@ import {
   ComponentInternalInstance
 } from 'vue'
 import axios from 'axios'
-import { ORG_DETAIL, DOWNLOAD_FILE, DICT_QUERY, ORG_UPDATE, ORG_DELETE, UPLOAD_FILE, ORG_ADD } from '@/api/api'
+import {
+  ORG_DETAIL,
+  DOWNLOAD_FILE,
+  DICT_QUERY,
+  ORG_UPDATE,
+  ORG_DELETE,
+  UPLOAD_FILE,
+  ORG_ADD,
+  GET_TENANT_BY_USER_ID,
+  GET_TENANT_BY_DEPT_ID,
+  TENANT_BY_DEPT_SAVE
+} from '@/api/api'
 
 interface OrgData{
   id: string
@@ -181,6 +220,16 @@ interface OrgData{
   parentName?: string
   parentId?: string
   factory?: string
+}
+interface Tenant{
+  id: string
+  systemCode: string
+  systemName: string
+}
+interface User{
+  id: string
+  deptId: string
+  roleName: string
 }
 export default defineComponent({
   name: 'OrgStructure',
@@ -225,6 +274,29 @@ export default defineComponent({
           trigger: 'blur'
         }
       ]
+    }
+
+    const tenantVisible = ref(false)
+    const tenantList = ref([])
+    const selectTenantId = ref([] as string[])
+
+    // 穿梭框过滤
+    const filterMethodTenant = (query:string, item:Tenant) => {
+      return item.systemName.indexOf(query) > -1
+    }
+    const updateTenant = async () => {
+      const res = await GET_TENANT_BY_DEPT_ID()
+      selectTenantId.value = res.data.data.map((it:Tenant) => it.systemCode)
+      tenantVisible.value = true
+    }
+    const UpdateUserTenant = async () => {
+      await TENANT_BY_DEPT_SAVE({
+        deptId: OrgDetail.value.id,
+        tenantList: selectTenantId.value
+      })
+      proxy.$successToast('操作成功')
+      tenantVisible.value = false
+      setDetail({ id: OrgDetail.value.id })
     }
 
     const setRedact = () => {
@@ -352,14 +424,20 @@ export default defineComponent({
       addDep.value.imgUrl = ''
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       getDictList()
       document.addEventListener('click', e => {
         const target = e.target as Element
         if (target.className !== 'menuli') menuVisible.value = false
       })
+      const userInfo: User = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
+      const res = await GET_TENANT_BY_USER_ID({ userId: userInfo.id })
+      tenantList.value = res.data.data
     })
     return {
+      tenantVisible,
+      tenantList,
+      selectTenantId,
       dataFormRef,
       dialogFormVisible1,
       orgViewRef,
@@ -375,6 +453,9 @@ export default defineComponent({
       detailImgFile,
       addImgFile,
       clickTreeNode,
+      updateTenant,
+      UpdateUserTenant,
+      filterMethodTenant,
       menuClick,
       httpRequest,
       addFile,

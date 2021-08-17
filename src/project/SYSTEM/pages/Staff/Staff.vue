@@ -35,10 +35,13 @@
         <el-table-column prop="email" label="邮箱" :show-overflow-tooltip="true" width="260" />
         <el-table-column prop="phone" label="手机号" :show-overflow-tooltip="true" width="120" />
         <el-table-column prop="created" label="创建日期" width="180" />
-        <el-table-column v-if="targetInfoList.length!==0" label="操作" fixed="right" width="65">
+        <el-table-column v-if="targetInfoList.length!==0" label="操作" fixed="right" width="120">
           <template #default="scope">
             <el-button v-if="isAuth('userEdit')" style="padding: 0;" type="text" @click="addOrUpdateItem(scope.row.id)">
               编辑
+            </el-button>
+            <el-button v-if="isAuth('userEdit')" style="padding: 0;" type="text" @click="updateTenant(scope.row)">
+              分配租户
             </el-button>
           </template>
         </el-table-column>
@@ -47,11 +50,49 @@
     </template>
   </OrgView>
   <StaffAddOrUpdate ref="addOrUpdateItemRef" v-model="isDialogShow" :org-tree="orgTree" @refreshDataList="getItemsList"/>
+  <el-dialog v-model="tenantVisible" :title="`${selectUser.realName}（${selectUser.workNum}）租户选择`" :close-on-click-modal="false" width="736px">
+    <div class="uaer-detail">
+      <el-transfer
+        v-model="selectTenantId"
+        filterable
+        :titles="['未分配租户', '已分配租户']"
+        :filter-method="filterMethodTenant"
+        filter-placeholder="请输入租户名称"
+        :data="tenantList"
+        :props="{key: 'systemCode',label: 'systemName'}"
+      >
+        <template #default="{option}">
+          <el-tooltip class="item" effect="dark" :content="option.systemName" placement="top-end">
+            <span>{{ option.systemName }}</span>
+          </el-tooltip>
+        </template>
+      </el-transfer>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button size="small" @click="visible = false">取消</el-button>
+        <el-button type="primary" size="small" @click="UpdateUserTenant">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts">
-import { ComponentInternalInstance, ComponentPublicInstance, defineComponent, getCurrentInstance, ref, nextTick } from 'vue'
-import { USER_LIST, USER_DELETE } from '@/api/api'
+import {
+  ComponentInternalInstance,
+  ComponentPublicInstance,
+  defineComponent,
+  getCurrentInstance,
+  ref,
+  nextTick,
+  onMounted
+} from 'vue'
+import {
+  USER_LIST,
+  USER_DELETE,
+  GET_TENANT_BY_USER_ID,
+  TENANT_BY_USER_SAVE
+} from '@/api/api'
 import StaffAddOrUpdate from './StaffAddOrUpdate.vue'
 
 interface DeptObject {
@@ -59,6 +100,16 @@ interface DeptObject {
   deptName: string;
   factory: string;
   children: DeptObject[];
+}
+interface User{
+  id: string
+  deptId: string
+  roleName: string
+}
+interface Tenant{
+  id: string
+  systemCode: string
+  systemName: string
 }
 export default defineComponent({
   name: 'Staff',
@@ -81,11 +132,18 @@ export default defineComponent({
     const isDialogShow = ref(false)
     const orgTree = ref([] as DeptObject[])
 
+    const tenantList = ref([])
+    const selectUser = ref({} as User)
+    const selectTenantId = ref([] as string[])
+    const tenantVisible = ref(false)
+
+    // 获取人员
     const showOrgDetail = (data: DeptObject) => {
       deptID.value = data.id
       deptName.value = data.deptName
       getItemsList()
     }
+    // 设置组织架构
     const setDeptId = (data: DeptObject[]) => {
       orgTree.value = data
       deptID.value = data[0].id
@@ -93,6 +151,7 @@ export default defineComponent({
       factory.value = data[0].factory
       getItemsList()
     }
+    // 获取人员
     const getItemsList = () => {
       if (!deptID.value) {
         proxy.$errorToast('请选择组织层级')
@@ -112,6 +171,7 @@ export default defineComponent({
         isDialogShow.value = false
       })
     }
+    // 新增修改
     const addOrUpdateItem = async (id:string) => {
       if (deptID.value) {
         isDialogShow.value = true
@@ -121,6 +181,7 @@ export default defineComponent({
         proxy.$errorToast('请先选择部门')
       }
     }
+    // 批量删除
     const removeItems = () => {
       const idList: string[] = []
       multipleSelection.value.forEach(item => {
@@ -138,14 +199,44 @@ export default defineComponent({
         })
       }
     }
+    // 分页
     const handleSizeChange = (val:number) => {
       pageSize.value = val
       getItemsList()
     }
+    // 分页
     const handleCurrentChange = (val:number) => {
       currPage.value = val
       getItemsList()
     }
+    // 穿梭框过滤
+    const filterMethodTenant = (query:string, item:Tenant) => {
+      return item.systemName.indexOf(query) > -1
+    }
+    // 分配租户
+    const updateTenant = async (row:User) => {
+      selectUser.value = row
+      const res = await GET_TENANT_BY_USER_ID({ userId: row.id })
+      selectTenantId.value = res.data.data.map((it:Tenant) => it.systemCode)
+      tenantVisible.value = true
+    }
+    // 分配租户确定
+    const UpdateUserTenant = async () => {
+      await TENANT_BY_USER_SAVE({
+        deptId: selectUser.value.deptId,
+        userId: selectUser.value.id,
+        tenantList: selectTenantId.value
+      })
+      proxy.$successToast('操作成功')
+      tenantVisible.value = false
+      getItemsList()
+    }
+
+    onMounted(async () => {
+      const userInfo: User = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
+      const res = await GET_TENANT_BY_USER_ID({ userId: userInfo.id })
+      tenantList.value = res.data.data
+    })
 
     return {
       orgTree,
@@ -157,6 +248,13 @@ export default defineComponent({
       targetInfoList,
       multipleSelection,
       addOrUpdateItemRef,
+      selectTenantId,
+      tenantList,
+      selectUser,
+      tenantVisible,
+      filterMethodTenant,
+      updateTenant,
+      UpdateUserTenant,
       removeItems,
       addOrUpdateItem,
       getItemsList,

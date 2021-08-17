@@ -21,6 +21,9 @@ export function GET_TENANT_BY_USER_ID (params = {}):Promise<AxiosResponse> {
     baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string)
   })
 }
+export function GET_TENANT_BY_DEPT_ID (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysTenant/querySelectedTenantIdByDept', params)
+}
 export function GET_TENANT (params = {}):Promise<AxiosResponse> {
   return Http.post('/sysTenant/querySysTenant', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
 }
@@ -35,6 +38,12 @@ export function TENANT_UPDATE (params = {}):Promise<AxiosResponse> {
 }
 export function UPDATE_TENANT (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysTenant/tenant/update', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
+}
+export function TENANT_BY_USER_SAVE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysTenant/saveUserTenant', params)
+}
+export function TENANT_BY_DEPT_SAVE (params = {}):Promise<AxiosResponse> {
+  return Http.post('/sysTenant/saveDeptTenant', params)
 }
 export function GET_NAV (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysUser/userRole/menuQuery', params, { baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string) })
