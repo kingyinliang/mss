@@ -120,7 +120,8 @@ import {
   USER_UNLOCK,
   USER_EXPORT,
   GET_TENANT_BY_USER_ID,
-  TENANT_BY_USER_SAVE
+  TENANT_BY_USER_SAVE,
+  GET_SELECT_TENANT_BY_USER_ID
 } from '@/api/api'
 
 interface Role{
@@ -256,7 +257,7 @@ export default defineComponent({
     // 分配租户
     const updateTenant = async (row:User) => {
       selectUser.value = row
-      const res = await GET_TENANT_BY_USER_ID({ userId: row.id })
+      const res = await GET_SELECT_TENANT_BY_USER_ID({ userId: row.id })
       selectTenantId.value = res.data.data.map((it:Tenant) => it.systemCode)
       tenantVisible.value = true
     }

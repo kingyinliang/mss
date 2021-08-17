@@ -285,8 +285,8 @@ export default defineComponent({
       return item.systemName.indexOf(query) > -1
     }
     const updateTenant = async () => {
-      const res = await GET_TENANT_BY_DEPT_ID()
-      selectTenantId.value = res.data.data.map((it:Tenant) => it.systemCode)
+      const res = await GET_TENANT_BY_DEPT_ID({ deptId: OrgDetail.value.id })
+      selectTenantId.value = res.data.data
       tenantVisible.value = true
     }
     const UpdateUserTenant = async () => {

@@ -21,6 +21,9 @@ export function GET_TENANT_BY_USER_ID (params = {}):Promise<AxiosResponse> {
     baseURL: (process.env.VUE_APP_SYSTEM_API as string) + (process.env.VUE_APP_API_V as string)
   })
 }
+export function GET_SELECT_TENANT_BY_USER_ID (params = {}):Promise<AxiosResponse> {
+  return Http.get('/sysTenant/querySelectedTenantIdByUser', params)
+}
 export function GET_TENANT_BY_DEPT_ID (params = {}):Promise<AxiosResponse> {
   return Http.get('/sysTenant/querySelectedTenantIdByDept', params)
 }
