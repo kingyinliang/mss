@@ -96,7 +96,7 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="visible = false">取消</el-button>
+        <el-button size="small" @click="tenantVisible = false">取消</el-button>
         <el-button type="primary" size="small" @click="UpdateUserTenant">确定</el-button>
       </span>
     </template>
