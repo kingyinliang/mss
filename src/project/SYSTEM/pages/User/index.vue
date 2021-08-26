@@ -35,7 +35,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column width="190" label="操作">
+      <el-table-column width="120" label="操作">
         <template #default="scope">
           <el-button v-if="isAuth('userReset')" style="padding: 0;" type="text" @click="PasswordReset(scope.row.id)">
             重置密码
@@ -43,9 +43,9 @@
           <el-button style="padding: 0;" type="text" @click="Unlock(scope.row.workNum)">
             解锁
           </el-button>
-          <el-button style="padding: 0;" type="text" @click="updateTenant(scope.row)">
+          <!--<el-button style="padding: 0;" type="text" @click="updateTenant(scope.row)">
             分配租户
-          </el-button>
+          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
