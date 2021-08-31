@@ -85,6 +85,8 @@ export default function (): LoginTs {
         systemName.value = 'MdsLogin'
       } else if (/cdm/.test(query.redirectUri)) {
         systemName.value = 'CdmLogin'
+      } else if (/qms/.test(query.redirectUri)) {
+        systemName.value = 'QmsLogin'
       } else {
         systemName.value = 'MssLogin'
       }

@@ -8,6 +8,7 @@ import MssLogin from './mss/mss_login.vue'
 import RdmLogin from './rdm/rdm_login.vue'
 import MdsLogin from './mds/mds_login.vue'
 import CdmLogin from './cdm/cdm_login.vue'
+import QmsLogin from './qms/qms_login.vue'
 import loginTs from './login'
 
 export default defineComponent({
@@ -16,7 +17,8 @@ export default defineComponent({
     MssLogin,
     RdmLogin,
     MdsLogin,
-    CdmLogin
+    CdmLogin,
+    QmsLogin
   },
   created (): void {
     this.init()
