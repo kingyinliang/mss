@@ -87,6 +87,7 @@ import { PROPERTY_DATA_QUERY, PROPERTY_SAVE } from '@/api/api'
 import _ from 'lodash'
 
     interface TargetInfoList {
+      propertyCode:string,
       propertyName:string,
       propertyTable:string,
       propertyType:string,
@@ -138,6 +139,7 @@ export default defineComponent({
     const proxy = ctx.proxy as any
     const searchString = ref('')
     const propertyTable = ref('')
+    const propertyCode = ref('')
     const isDialogShow = ref(false)
     const currentDataTable = ref<CurrentDataTable[]>([])
     const currentDataTableOrg = ref<CurrentDataTable[]>([])
@@ -151,6 +153,7 @@ export default defineComponent({
       console.log(obj)
       loading.value = true
       propertyTable.value = obj.propertyTable ? obj.propertyTable : ''
+      propertyCode.value = obj.propertyCode ? obj.propertyCode : ''
       currentDataTable.value = []
       currentDataTableOrg.value = []
       queryItems('')
@@ -161,6 +164,7 @@ export default defineComponent({
     const queryItems = (str:string) => {
       PROPERTY_DATA_QUERY({
         propertyTableName: propertyTable.value,
+        propertyCode: propertyCode.value,
         privilegeIdentity: str
       }).then(({ data }) => {
         setTimeout(() => {
