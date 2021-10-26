@@ -1,7 +1,7 @@
 @Library('ops-pipeline-library') _
 VueNewCI {
     //Jenkins Slave Node
-    jenkins_node = 'ecs-agent-vuejs'
+    jenkins_node = 'ecs-agent-sza'
     //Project Name
     project = 'mss-web'
     //UAT ALB ARN
