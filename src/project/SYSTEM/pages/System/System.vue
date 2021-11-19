@@ -24,10 +24,10 @@
       <el-table-column prop="oneMoreFlag" label="多工厂标识" :show-overflow-tooltip="true" min-width="100" />
       <el-table-column label="操作" min-width="100" fixed="right">
         <template #default="scope">
-          <el-button v-if="isAuth('roleDeptCfg')" type="text" class="role__btn" @click="addOrUpdate(scope.row)">
+          <el-button type="text" class="role__btn" @click="addOrUpdate(scope.row)">
             修改
           </el-button>
-          <el-button v-if="isAuth('roleMenuCfg')" type="text" class="role__btn" @click="remove(scope.row.id)">
+          <el-button type="text" class="role__btn" @click="remove(scope.row.id)">
             删除
           </el-button>
         </template>
